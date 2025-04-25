@@ -2,7 +2,7 @@
 /**
  * Template Name: Dashboard
  *
- * Plantilla para crear un dashboard personalizado con estilo del template Boron.
+ * Esta plantilla muestra un panel de control personalizado con widgets y estadísticas.
  *
  * @package UI_Panel_SAAS
  * @since 1.0.0
@@ -19,406 +19,483 @@ get_sidebar();
 
 <main id="primary" class="content-body">
     <div class="container-fluid">
-        
         <?php
-        // Título de la página con breadcrumbs
+        // Título de la página
         if (function_exists('ui_panel_saas_page_title')) {
             ui_panel_saas_page_title();
         } else {
-            the_title('<h1 class="page-title">', '</h1>');
+            ?>
+            <div class="row">
+                <div class="col-12">
+                    <div class="page-title-box">
+                        <h4 class="page-title">
+                            <?php esc_html_e('Panel de Control', 'ui-panel-saas'); ?>
+                        </h4>
+                    </div>
+                </div>
+            </div>
+            <?php
         }
         ?>
 
-        <!-- Widgets/Tarjetas de estadísticas -->
+        <!-- Widgets de estadísticas -->
         <div class="row">
-            <!-- Tarjeta 1: Total de usuarios -->
-            <div class="col-md-6 col-xl-3">
-                <div class="card">
+            <div class="col-xxl-3 col-md-6">
+                <div class="card widget-flat">
                     <div class="card-body">
-                        <div class="d-flex align-items-center">
-                            <div class="flex-shrink-0">
-                                <div class="avatar-sm rounded bg-primary-subtle">
-                                    <span class="avatar-title rounded bg-primary-subtle text-primary">
-                                        <i class="ri-user-line fs-22"></i>
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="flex-grow-1 ms-3">
-                                <?php 
-                                // Contar usuarios
-                                $users_count = count_users();
-                                $total_users = $users_count['total_users'];
-                                ?>
-                                <h4 class="mt-0 mb-1 fs-20"><?php echo esc_html(number_format_i18n($total_users)); ?></h4>
-                                <p class="mb-0 text-muted"><?php echo esc_html__('Usuarios totales', 'ui-panel-saas'); ?></p>
-                            </div>
-                            <div class="dropdown">
-                                <a href="#" class="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="ri-more-2-fill"></i>
-                                </a>
-                                <div class="dropdown-menu dropdown-menu-end">
-                                    <a href="<?php echo esc_url(admin_url('users.php')); ?>" class="dropdown-item">
-                                        <i class="ri-eye-fill me-2"></i> 
-                                        <?php echo esc_html__('Ver todos', 'ui-panel-saas'); ?>
-                                    </a>
-                                    <?php if (current_user_can('create_users')) : ?>
-                                    <a href="<?php echo esc_url(admin_url('user-new.php')); ?>" class="dropdown-item">
-                                        <i class="ri-user-add-line me-2"></i> 
-                                        <?php echo esc_html__('Añadir nuevo', 'ui-panel-saas'); ?>
-                                    </a>
-                                    <?php endif; ?>
-                                </div>
-                            </div>
+                        <div class="float-end">
+                            <i class="ri-user-line widget-icon"></i>
                         </div>
+                        <h5 class="text-muted fw-normal mt-0" title="<?php esc_attr_e('Número de Usuarios', 'ui-panel-saas'); ?>">
+                            <?php esc_html_e('Usuarios', 'ui-panel-saas'); ?>
+                        </h5>
+                        <h3 class="mt-3 mb-3">
+                            <?php 
+                            $count_users = count_users();
+                            echo number_format_i18n($count_users['total_users']); 
+                            ?>
+                        </h3>
+                        <p class="mb-0 text-muted">
+                            <span class="text-success me-2">
+                                <i class="ri-arrow-up-line"></i> 5.27%
+                            </span>
+                            <span class="text-nowrap">
+                                <?php esc_html_e('Desde el mes pasado', 'ui-panel-saas'); ?>
+                            </span>
+                        </p>
                     </div>
                 </div>
             </div>
-            
-            <!-- Tarjeta 2: Posts totales -->
-            <div class="col-md-6 col-xl-3">
-                <div class="card">
+
+            <div class="col-xxl-3 col-md-6">
+                <div class="card widget-flat">
                     <div class="card-body">
-                        <div class="d-flex align-items-center">
-                            <div class="flex-shrink-0">
-                                <div class="avatar-sm rounded bg-success-subtle">
-                                    <span class="avatar-title rounded bg-success-subtle text-success">
-                                        <i class="ri-article-line fs-22"></i>
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="flex-grow-1 ms-3">
-                                <?php 
-                                // Contar posts publicados
-                                $count_posts = wp_count_posts();
-                                $published_posts = $count_posts->publish;
-                                ?>
-                                <h4 class="mt-0 mb-1 fs-20"><?php echo esc_html(number_format_i18n($published_posts)); ?></h4>
-                                <p class="mb-0 text-muted"><?php echo esc_html__('Entradas publicadas', 'ui-panel-saas'); ?></p>
-                            </div>
-                            <div class="dropdown">
-                                <a href="#" class="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="ri-more-2-fill"></i>
-                                </a>
-                                <div class="dropdown-menu dropdown-menu-end">
-                                    <a href="<?php echo esc_url(admin_url('edit.php')); ?>" class="dropdown-item">
-                                        <i class="ri-eye-fill me-2"></i> 
-                                        <?php echo esc_html__('Ver todos', 'ui-panel-saas'); ?>
-                                    </a>
-                                    <?php if (current_user_can('publish_posts')) : ?>
-                                    <a href="<?php echo esc_url(admin_url('post-new.php')); ?>" class="dropdown-item">
-                                        <i class="ri-add-line me-2"></i> 
-                                        <?php echo esc_html__('Añadir nueva', 'ui-panel-saas'); ?>
-                                    </a>
-                                    <?php endif; ?>
-                                </div>
-                            </div>
+                        <div class="float-end">
+                            <i class="ri-article-line widget-icon"></i>
                         </div>
+                        <h5 class="text-muted fw-normal mt-0" title="<?php esc_attr_e('Número de Publicaciones', 'ui-panel-saas'); ?>">
+                            <?php esc_html_e('Publicaciones', 'ui-panel-saas'); ?>
+                        </h5>
+                        <h3 class="mt-3 mb-3">
+                            <?php
+                            $count_posts = wp_count_posts();
+                            echo number_format_i18n($count_posts->publish);
+                            ?>
+                        </h3>
+                        <p class="mb-0 text-muted">
+                            <span class="text-danger me-2">
+                                <i class="ri-arrow-down-line"></i> 1.08%
+                            </span>
+                            <span class="text-nowrap">
+                                <?php esc_html_e('Desde el mes pasado', 'ui-panel-saas'); ?>
+                            </span>
+                        </p>
                     </div>
                 </div>
             </div>
-            
-            <!-- Tarjeta 3: Páginas -->
-            <div class="col-md-6 col-xl-3">
-                <div class="card">
+
+            <div class="col-xxl-3 col-md-6">
+                <div class="card widget-flat">
                     <div class="card-body">
-                        <div class="d-flex align-items-center">
-                            <div class="flex-shrink-0">
-                                <div class="avatar-sm rounded bg-info-subtle">
-                                    <span class="avatar-title rounded bg-info-subtle text-info">
-                                        <i class="ri-pages-line fs-22"></i>
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="flex-grow-1 ms-3">
-                                <?php 
-                                // Contar páginas publicadas
-                                $count_pages = wp_count_posts('page');
-                                $published_pages = $count_pages->publish;
-                                ?>
-                                <h4 class="mt-0 mb-1 fs-20"><?php echo esc_html(number_format_i18n($published_pages)); ?></h4>
-                                <p class="mb-0 text-muted"><?php echo esc_html__('Páginas publicadas', 'ui-panel-saas'); ?></p>
-                            </div>
-                            <div class="dropdown">
-                                <a href="#" class="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="ri-more-2-fill"></i>
-                                </a>
-                                <div class="dropdown-menu dropdown-menu-end">
-                                    <a href="<?php echo esc_url(admin_url('edit.php?post_type=page')); ?>" class="dropdown-item">
-                                        <i class="ri-eye-fill me-2"></i> 
-                                        <?php echo esc_html__('Ver todas', 'ui-panel-saas'); ?>
-                                    </a>
-                                    <?php if (current_user_can('publish_pages')) : ?>
-                                    <a href="<?php echo esc_url(admin_url('post-new.php?post_type=page')); ?>" class="dropdown-item">
-                                        <i class="ri-add-line me-2"></i> 
-                                        <?php echo esc_html__('Añadir nueva', 'ui-panel-saas'); ?>
-                                    </a>
-                                    <?php endif; ?>
-                                </div>
-                            </div>
+                        <div class="float-end">
+                            <i class="ri-message-2-line widget-icon"></i>
                         </div>
+                        <h5 class="text-muted fw-normal mt-0" title="<?php esc_attr_e('Número de Comentarios', 'ui-panel-saas'); ?>">
+                            <?php esc_html_e('Comentarios', 'ui-panel-saas'); ?>
+                        </h5>
+                        <h3 class="mt-3 mb-3">
+                            <?php
+                            $count_comments = wp_count_comments();
+                            echo number_format_i18n($count_comments->approved);
+                            ?>
+                        </h3>
+                        <p class="mb-0 text-muted">
+                            <span class="text-success me-2">
+                                <i class="ri-arrow-up-line"></i> 3.18%
+                            </span>
+                            <span class="text-nowrap">
+                                <?php esc_html_e('Desde el mes pasado', 'ui-panel-saas'); ?>
+                            </span>
+                        </p>
                     </div>
                 </div>
             </div>
-            
-            <!-- Tarjeta 4: Comentarios -->
-            <div class="col-md-6 col-xl-3">
-                <div class="card">
+
+            <div class="col-xxl-3 col-md-6">
+                <div class="card widget-flat">
                     <div class="card-body">
-                        <div class="d-flex align-items-center">
-                            <div class="flex-shrink-0">
-                                <div class="avatar-sm rounded bg-warning-subtle">
-                                    <span class="avatar-title rounded bg-warning-subtle text-warning">
-                                        <i class="ri-chat-3-line fs-22"></i>
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="flex-grow-1 ms-3">
-                                <?php 
-                                // Contar comentarios aprobados
-                                $comments_count = wp_count_comments();
-                                $approved_comments = $comments_count->approved;
-                                ?>
-                                <h4 class="mt-0 mb-1 fs-20"><?php echo esc_html(number_format_i18n($approved_comments)); ?></h4>
-                                <p class="mb-0 text-muted"><?php echo esc_html__('Comentarios', 'ui-panel-saas'); ?></p>
-                            </div>
-                            <div class="dropdown">
-                                <a href="#" class="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="ri-more-2-fill"></i>
-                                </a>
-                                <div class="dropdown-menu dropdown-menu-end">
-                                    <a href="<?php echo esc_url(admin_url('edit-comments.php')); ?>" class="dropdown-item">
-                                        <i class="ri-eye-fill me-2"></i> 
-                                        <?php echo esc_html__('Ver todos', 'ui-panel-saas'); ?>
-                                    </a>
-                                    <?php if ($comments_count->moderated > 0 && current_user_can('moderate_comments')) : ?>
-                                    <a href="<?php echo esc_url(admin_url('edit-comments.php?comment_status=moderated')); ?>" class="dropdown-item">
-                                        <i class="ri-time-line me-2"></i> 
-                                        <?php echo esc_html__('Pendientes', 'ui-panel-saas'); ?> 
-                                        <span class="badge bg-danger"><?php echo esc_html(number_format_i18n($comments_count->moderated)); ?></span>
-                                    </a>
-                                    <?php endif; ?>
-                                </div>
-                            </div>
+                        <div class="float-end">
+                            <i class="ri-eye-line widget-icon"></i>
                         </div>
+                        <h5 class="text-muted fw-normal mt-0" title="<?php esc_attr_e('Visualizaciones de Página', 'ui-panel-saas'); ?>">
+                            <?php esc_html_e('Visualizaciones', 'ui-panel-saas'); ?>
+                        </h5>
+                        <h3 class="mt-3 mb-3">
+                            <?php
+                            // Si tienes un plugin de estadísticas, puedes obtener datos reales aquí
+                            // De lo contrario, mostramos un valor de ejemplo
+                            echo number_format_i18n(12450);
+                            ?>
+                        </h3>
+                        <p class="mb-0 text-muted">
+                            <span class="text-success me-2">
+                                <i class="ri-arrow-up-line"></i> 7.41%
+                            </span>
+                            <span class="text-nowrap">
+                                <?php esc_html_e('Desde el mes pasado', 'ui-panel-saas'); ?>
+                            </span>
+                        </p>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- Fin de widgets/tarjetas de estadísticas -->
-        
+        <!-- end row -->
+
         <div class="row">
-            <!-- Gráfico de actividad reciente -->
             <div class="col-xl-8">
+                <!-- Gráfico de actividad reciente -->
                 <div class="card">
-                    <div class="card-header d-flex align-items-center justify-content-between">
-                        <h4 class="card-title mb-0"><?php echo esc_html__('Actividad reciente', 'ui-panel-saas'); ?></h4>
-                        <div class="dropdown">
-                            <a href="#" class="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="ri-more-2-fill"></i>
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-end">
-                                <a href="#" class="dropdown-item"><?php echo esc_html__('Actualizar', 'ui-panel-saas'); ?></a>
-                                <a href="#" class="dropdown-item"><?php echo esc_html__('Exportar', 'ui-panel-saas'); ?></a>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h4 class="header-title"><?php esc_html_e('Actividad del Sitio', 'ui-panel-saas'); ?></h4>
+                            <div class="dropdown">
+                                <a href="#" class="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="ri-more-2-fill"></i>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end">
+                                    <a href="javascript:void(0);" class="dropdown-item"><?php esc_html_e('Informes Semanales', 'ui-panel-saas'); ?></a>
+                                    <a href="javascript:void(0);" class="dropdown-item"><?php esc_html_e('Informes Mensuales', 'ui-panel-saas'); ?></a>
+                                    <a href="javascript:void(0);" class="dropdown-item"><?php esc_html_e('Exportar Informe', 'ui-panel-saas'); ?></a>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="card-body">
-                        <div id="activity-chart" style="height: 300px;"></div>
+
+                        <div class="chart-container" style="height: 320px;">
+                            <canvas id="activity-chart"></canvas>
+                        </div>
                     </div>
                 </div>
-            </div>
-            
-            <!-- Actividades recientes -->
-            <div class="col-xl-4">
+                <!-- Fin del gráfico de actividad -->
+
+                <!-- Publicaciones recientes -->
                 <div class="card">
-                    <div class="card-header border-0">
-                        <div class="d-flex align-items-center">
-                            <h5 class="card-title mb-0 flex-grow-1"><?php echo esc_html__('Actividades recientes', 'ui-panel-saas'); ?></h5>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h4 class="header-title"><?php esc_html_e('Publicaciones Recientes', 'ui-panel-saas'); ?></h4>
+                            <a href="<?php echo esc_url(admin_url('edit.php')); ?>" class="btn btn-sm btn-primary">
+                                <?php esc_html_e('Ver Todas', 'ui-panel-saas'); ?>
+                            </a>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table table-centered table-nowrap mb-0">
+                                <thead>
+                                    <tr>
+                                        <th><?php esc_html_e('Título', 'ui-panel-saas'); ?></th>
+                                        <th><?php esc_html_e('Categoría', 'ui-panel-saas'); ?></th>
+                                        <th><?php esc_html_e('Autor', 'ui-panel-saas'); ?></th>
+                                        <th><?php esc_html_e('Fecha', 'ui-panel-saas'); ?></th>
+                                        <th><?php esc_html_e('Estado', 'ui-panel-saas'); ?></th>
+                                        <th><?php esc_html_e('Acciones', 'ui-panel-saas'); ?></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php
+                                    $recent_posts = wp_get_recent_posts(array(
+                                        'numberposts' => 5,
+                                        'post_status' => 'publish'
+                                    ));
+                                    
+                                    foreach ($recent_posts as $post) :
+                                        $post_id = $post['ID'];
+                                        $categories = get_the_category($post_id);
+                                        $author_id = $post['post_author'];
+                                        $author_name = get_the_author_meta('display_name', $author_id);
+                                    ?>
+                                    <tr>
+                                        <td>
+                                            <a href="<?php echo esc_url(get_permalink($post_id)); ?>" class="text-body fw-semibold">
+                                                <?php echo esc_html(get_the_title($post_id)); ?>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <?php
+                                            if (!empty($categories)) {
+                                                $category_names = array();
+                                                foreach ($categories as $category) {
+                                                    $category_names[] = '<span class="badge bg-primary">' . esc_html($category->name) . '</span>';
+                                                }
+                                                echo implode(' ', $category_names);
+                                            } else {
+                                                echo '<span class="badge bg-secondary">' . esc_html__('Sin categoría', 'ui-panel-saas') . '</span>';
+                                            }
+                                            ?>
+                                        </td>
+                                        <td><?php echo esc_html($author_name); ?></td>
+                                        <td><?php echo esc_html(get_the_date('', $post_id)); ?></td>
+                                        <td><span class="badge bg-success"><?php esc_html_e('Publicado', 'ui-panel-saas'); ?></span></td>
+                                        <td>
+                                            <a href="<?php echo esc_url(get_permalink($post_id)); ?>" class="action-icon">
+                                                <i class="ri-eye-line"></i>
+                                            </a>
+                                            <?php if (current_user_can('edit_post', $post_id)) : ?>
+                                            <a href="<?php echo esc_url(get_edit_post_link($post_id)); ?>" class="action-icon">
+                                                <i class="ri-edit-line"></i>
+                                            </a>
+                                            <?php endif; ?>
+                                        </td>
+                                    </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
-                    <div class="card-body pt-0">
-                        <div class="dashboard-activities">
-                            <?php
-                            // Obtener actividad reciente (posts, comentarios, etc.)
-                            $args = array(
-                                'post_type' => array('post', 'page'),
-                                'post_status' => 'publish',
-                                'posts_per_page' => 3,
-                                'orderby' => 'date',
-                                'order' => 'DESC',
-                            );
-                            $recent_posts = new WP_Query($args);
-                            
-                            if ($recent_posts->have_posts()) :
-                                while ($recent_posts->have_posts()) :
-                                    $recent_posts->the_post();
-                            ?>
-                            <div class="activity-item d-flex">
-                                <div class="activity-avatar">
-                                    <?php echo get_avatar(get_the_author_meta('ID'), 40, '', get_the_author(), array('class' => 'rounded-circle')); ?>
-                                </div>
-                                <div class="activity-content flex-grow-1 ms-3">
-                                    <h6 class="mb-1">
-                                        <?php the_author(); ?> 
-                                        <span class="text-muted small">
-                                            <?php echo esc_html__('publicó', 'ui-panel-saas'); ?> 
-                                            <?php if (get_post_type() === 'page') : ?>
-                                                <?php echo esc_html__('una página', 'ui-panel-saas'); ?>
-                                            <?php else : ?>
-                                                <?php echo esc_html__('una entrada', 'ui-panel-saas'); ?>
-                                            <?php endif; ?>
-                                        </span>
-                                    </h6>
-                                    <p class="text-muted mb-2">
-                                        <a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
-                                    </p>
-                                    <small class="text-muted">
-                                        <i class="ri-time-line"></i> 
-                                        <?php echo esc_html(human_time_diff(get_the_time('U'), current_time('timestamp'))); ?> 
-                                        <?php echo esc_html__('atrás', 'ui-panel-saas'); ?>
-                                    </small>
+                </div>
+                <!-- Fin de publicaciones recientes -->
+            </div>
+
+            <div class="col-xl-4">
+                <!-- Área de widget de WordPress -->
+                <?php if (is_active_sidebar('dashboard')) : ?>
+                <div class="dashboard-widget-area">
+                    <?php dynamic_sidebar('dashboard'); ?>
+                </div>
+                <?php else : ?>
+                
+                <!-- Actividad reciente -->
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h4 class="header-title"><?php esc_html_e('Actividad Reciente', 'ui-panel-saas'); ?></h4>
+                            <div class="dropdown">
+                                <a href="#" class="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="ri-more-2-fill"></i>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end">
+                                    <a href="javascript:void(0);" class="dropdown-item"><?php esc_html_e('Actualizar', 'ui-panel-saas'); ?></a>
+                                    <a href="javascript:void(0);" class="dropdown-item"><?php esc_html_e('Ver Todo', 'ui-panel-saas'); ?></a>
                                 </div>
                             </div>
+                        </div>
+
+                        <div class="timeline-alt pb-0">
                             <?php
-                                endwhile;
-                                wp_reset_postdata();
-                            endif;
-                            
-                            // Comentarios recientes
+                            // Obtener comentarios recientes
                             $recent_comments = get_comments(array(
-                                'number' => 2,
-                                'status' => 'approve',
+                                'number' => 3,
+                                'status' => 'approve'
                             ));
                             
-                            if ($recent_comments) :
-                                foreach ($recent_comments as $comment) :
+                            // Obtener usuarios registrados recientemente
+                            $recent_users = get_users(array(
+                                'number' => 2,
+                                'orderby' => 'registered',
+                                'order' => 'DESC'
+                            ));
+                            
+                            // Mezclar y ordenar por fecha
+                            $activities = array();
+                            
+                            foreach ($recent_comments as $comment) {
+                                $activities[] = array(
+                                    'type' => 'comment',
+                                    'date' => strtotime($comment->comment_date),
+                                    'data' => $comment
+                                );
+                            }
+                            
+                            foreach ($recent_users as $user) {
+                                $activities[] = array(
+                                    'type' => 'user',
+                                    'date' => strtotime($user->user_registered),
+                                    'data' => $user
+                                );
+                            }
+                            
+                            // Ordenar por fecha de forma descendente
+                            usort($activities, function($a, $b) {
+                                return $b['date'] - $a['date'];
+                            });
+                            
+                            // Mostrar actividades
+                            foreach ($activities as $activity) :
+                                if ($activity['type'] === 'comment') :
+                                    $comment = $activity['data'];
+                                    $comment_author = $comment->comment_author;
+                                    $comment_post = get_post($comment->comment_post_ID);
+                                    $time_diff = human_time_diff(strtotime($comment->comment_date), current_time('timestamp'));
                             ?>
-                            <div class="activity-item d-flex">
-                                <div class="activity-avatar">
-                                    <?php echo get_avatar($comment->comment_author_email, 40, '', $comment->comment_author, array('class' => 'rounded-circle')); ?>
-                                </div>
-                                <div class="activity-content flex-grow-1 ms-3">
-                                    <h6 class="mb-1">
-                                        <?php echo esc_html($comment->comment_author); ?> 
-                                        <span class="text-muted small">
-                                            <?php echo esc_html__('comentó en', 'ui-panel-saas'); ?>
-                                        </span>
-                                    </h6>
-                                    <p class="text-muted mb-2">
-                                        <a href="<?php echo esc_url(get_permalink($comment->comment_post_ID)); ?>">
-                                            <?php echo esc_html(get_the_title($comment->comment_post_ID)); ?>
-                                        </a>
-                                    </p>
-                                    <p class="mb-2"><?php echo wp_kses_post(wp_trim_words($comment->comment_content, 15, '...')); ?></p>
-                                    <small class="text-muted">
-                                        <i class="ri-time-line"></i> 
-                                        <?php echo esc_html(human_time_diff(strtotime($comment->comment_date), current_time('timestamp'))); ?> 
-                                        <?php echo esc_html__('atrás', 'ui-panel-saas'); ?>
+                            <div class="timeline-item">
+                                <i class="timeline-icon ri-message-2-line"></i>
+                                <div class="timeline-item-info">
+                                    <a href="<?php echo esc_url(get_comment_link($comment)); ?>" class="text-body fw-semibold mb-1 d-block">
+                                        <?php echo esc_html($comment_author); ?>
+                                    </a>
+                                    <small>
+                                        <?php
+                                        printf(
+                                            esc_html__('Comentó en "%s"', 'ui-panel-saas'),
+                                            '<a href="' . esc_url(get_permalink($comment->comment_post_ID)) . '">' . esc_html(get_the_title($comment->comment_post_ID)) . '</a>'
+                                        );
+                                        ?>
                                     </small>
+                                    <p class="mb-0 pb-2">
+                                        <small class="text-muted">
+                                            <?php echo sprintf(esc_html__('hace %s', 'ui-panel-saas'), $time_diff); ?>
+                                        </small>
+                                    </p>
                                 </div>
                             </div>
                             <?php
-                                endforeach;
-                            endif;
+                                elseif ($activity['type'] === 'user') :
+                                    $user = $activity['data'];
+                                    $time_diff = human_time_diff(strtotime($user->user_registered), current_time('timestamp'));
                             ?>
+                            <div class="timeline-item">
+                                <i class="timeline-icon ri-user-add-line"></i>
+                                <div class="timeline-item-info">
+                                    <a href="<?php echo esc_url(admin_url('user-edit.php?user_id=' . $user->ID)); ?>" class="text-body fw-semibold mb-1 d-block">
+                                        <?php echo esc_html($user->display_name); ?>
+                                    </a>
+                                    <small><?php esc_html_e('Se registró como nuevo usuario', 'ui-panel-saas'); ?></small>
+                                    <p class="mb-0 pb-2">
+                                        <small class="text-muted">
+                                            <?php echo sprintf(esc_html__('hace %s', 'ui-panel-saas'), $time_diff); ?>
+                                        </small>
+                                    </p>
+                                </div>
+                            </div>
+                            <?php endif; endforeach; ?>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        
-        <!-- Área de widgets del dashboard -->
-        <?php if (is_active_sidebar('dashboard')) : ?>
-        <div class="row">
-            <div class="col-12">
-                <?php dynamic_sidebar('dashboard'); ?>
-            </div>
-        </div>
-        <?php endif; ?>
-        
-        <?php
-        // Si hay contenido en la página, mostrarlo
-        while (have_posts()) :
-            the_post();
-        ?>
-        <div class="row">
-            <div class="col-12">
+                <!-- Fin de actividad reciente -->
+                
+                <!-- Resumen del sistema -->
                 <div class="card">
                     <div class="card-body">
-                        <?php the_content(); ?>
+                        <h4 class="header-title mb-3"><?php esc_html_e('Información del Sistema', 'ui-panel-saas'); ?></h4>
+                        
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item px-0 py-2">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <p class="mb-0"><?php esc_html_e('Versión de WordPress', 'ui-panel-saas'); ?></p>
+                                    <span class="badge bg-primary rounded-pill"><?php echo esc_html(get_bloginfo('version')); ?></span>
+                                </div>
+                            </li>
+                            <li class="list-group-item px-0 py-2">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <p class="mb-0"><?php esc_html_e('Tema', 'ui-panel-saas'); ?></p>
+                                    <span class="badge bg-primary rounded-pill"><?php echo esc_html(wp_get_theme()->get('Name')); ?></span>
+                                </div>
+                            </li>
+                            <li class="list-group-item px-0 py-2">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <p class="mb-0"><?php esc_html_e('Plugins Activos', 'ui-panel-saas'); ?></p>
+                                    <span class="badge bg-primary rounded-pill">
+                                        <?php
+                                        if (!function_exists('get_plugins')) {
+                                            require_once ABSPATH . 'wp-admin/includes/plugin.php';
+                                        }
+                                        $all_plugins = get_plugins();
+                                        $active_plugins = get_option('active_plugins', array());
+                                        echo count($active_plugins) . '/' . count($all_plugins);
+                                        ?>
+                                    </span>
+                                </div>
+                            </li>
+                            <li class="list-group-item px-0 py-2">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <p class="mb-0"><?php esc_html_e('PHP Versión', 'ui-panel-saas'); ?></p>
+                                    <span class="badge bg-primary rounded-pill"><?php echo esc_html(phpversion()); ?></span>
+                                </div>
+                            </li>
+                            <li class="list-group-item px-0 py-2">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <p class="mb-0"><?php esc_html_e('MySQL Versión', 'ui-panel-saas'); ?></p>
+                                    <span class="badge bg-primary rounded-pill">
+                                        <?php 
+                                        global $wpdb;
+                                        echo esc_html($wpdb->db_version());
+                                        ?>
+                                    </span>
+                                </div>
+                            </li>
+                        </ul>
                     </div>
                 </div>
+                <!-- Fin de resumen del sistema -->
+                
+                <?php endif; ?>
             </div>
         </div>
-        <?php endwhile; ?>
-        
+        <!-- end row -->
     </div>
 </main>
 
-<!-- Script para inicializar el gráfico -->
 <script>
     (function($) {
         'use strict';
         
         $(document).ready(function() {
-            if (typeof ApexCharts !== 'undefined') {
-                // Fechas para el eje X (últimos 30 días)
-                var dates = [];
-                for (var i = 30; i >= 0; i--) {
-                    var date = new Date();
-                    date.setDate(date.getDate() - i);
-                    dates.push(date.toLocaleDateString());
-                }
+            // Configuración del gráfico de actividad
+            if (document.getElementById('activity-chart')) {
+                var ctx = document.getElementById('activity-chart').getContext('2d');
                 
-                // Datos de ejemplo (puedes reemplazarlos con datos reales mediante AJAX)
-                var options = {
-                    chart: {
-                        height: 300,
-                        type: 'area',
-                        toolbar: {
-                            show: false
+                // Datos de ejemplo para el gráfico
+                // En una implementación real, estos datos vendrían de la base de datos o una API
+                var activityData = {
+                    labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+                    datasets: [
+                        {
+                            label: '<?php esc_html_e('Visitas', 'ui-panel-saas'); ?>',
+                            data: [450, 380, 520, 690, 605, 535, 720, 830, 790, 850, 760, 695],
+                            backgroundColor: 'rgba(79, 70, 229, 0.2)',
+                            borderColor: 'rgba(79, 70, 229, 1)',
+                            tension: 0.4,
+                            fill: true
+                        },
+                        {
+                            label: '<?php esc_html_e('Páginas Vistas', 'ui-panel-saas'); ?>',
+                            data: [650, 590, 710, 940, 820, 730, 950, 1100, 980, 1150, 1050, 940],
+                            backgroundColor: 'rgba(16, 185, 129, 0.2)',
+                            borderColor: 'rgba(16, 185, 129, 1)',
+                            tension: 0.4,
+                            fill: true
                         }
-                    },
-                    dataLabels: {
-                        enabled: false
-                    },
-                    stroke: {
-                        curve: 'smooth',
-                        width: 2
-                    },
-                    series: [{
-                        name: '<?php echo esc_js(__('Vistas', 'ui-panel-saas')); ?>',
-                        data: [45, 52, 38, 24, 33, 26, 21, 20, 6, 8, 15, 10, 30, 38, 42, 45, 55, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200]
-                    }, {
-                        name: '<?php echo esc_js(__('Visitantes', 'ui-panel-saas')); ?>',
-                        data: [35, 41, 62, 42, 13, 18, 29, 37, 36, 51, 32, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100, 110, 120, 130, 140, 150, 160]
-                    }],
-                    colors: ['#4F46E5', '#8B5CF6'],
-                    xaxis: {
-                        categories: dates,
-                    },
-                    yaxis: {
-                        title: {
-                            text: '<?php echo esc_js(__('Número', 'ui-panel-saas')); ?>'
-                        },
-                    },
-                    tooltip: {
-                        x: {
-                            format: 'dd/MM/yy'
-                        },
-                    },
-                    grid: {
-                        borderColor: '#f1f1f1',
-                    }
+                    ]
                 };
                 
-                var chart = new ApexCharts(
-                    document.querySelector("#activity-chart"),
-                    options
-                );
-                
-                chart.render();
+                var chart = new Chart(ctx, {
+                    type: 'line',
+                    data: activityData,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: {
+                                    borderDash: [2],
+                                    drawBorder: false
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    display: false
+                                }
+                            }
+                        }
+                    }
+                });
             }
+            
+            // Puedes agregar más gráficos o funcionalidades aquí
         });
     })(jQuery);
 </script>
