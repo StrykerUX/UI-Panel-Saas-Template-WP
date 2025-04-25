@@ -206,6 +206,17 @@ function ui_panel_saas_widgets_init() {
                             </div>
                         </div></div><div class="card-body">',
     ));
+
+    // Registrar widget area para la plantilla Canvas
+    register_sidebar(array(
+        'name'          => esc_html__('Canvas', 'ui-panel-saas'),
+        'id'            => 'canvas',
+        'description'   => esc_html__('Añade widgets aquí para que aparezcan en la plantilla Canvas.', 'ui-panel-saas'),
+        'before_widget' => '<div id="%1$s" class="canvas-widget %2$s">',
+        'after_widget'  => '</div>',
+        'before_title'  => '<h4 class="canvas-widget-title">',
+        'after_title'   => '</h4>',
+    ));
 }
 add_action('widgets_init', 'ui_panel_saas_widgets_init');
 
@@ -237,6 +248,11 @@ function ui_panel_saas_scripts() {
     // Estilos específicos para RTL si es necesario
     if (is_rtl()) {
         wp_enqueue_style('ui-panel-saas-rtl', UI_PANEL_SAAS_ASSETS_URI . '/css/rtl.css', array('ui-panel-saas-main'), UI_PANEL_SAAS_VERSION);
+    }
+    
+    // Cargar estilos de Canvas cuando sea necesario
+    if (is_page_template('page-templates/canvas.php')) {
+        wp_enqueue_style('ui-panel-saas-canvas', UI_PANEL_SAAS_ASSETS_URI . '/css/canvas.css', array('ui-panel-saas-main'), UI_PANEL_SAAS_VERSION);
     }
     
     // Scripts de Bootstrap
@@ -432,6 +448,13 @@ function ui_panel_saas_register_shortcodes() {
     
     // Shortcode para mostrar botones estilizados
     add_shortcode('ui_panel_button', 'ui_panel_saas_button_shortcode');
+    
+    // Shortcodes específicos para la plantilla Canvas
+    add_shortcode('flex_row', 'ui_panel_saas_flex_row_shortcode');
+    add_shortcode('flex_column', 'ui_panel_saas_flex_column_shortcode');
+    add_shortcode('flex_item', 'ui_panel_saas_flex_item_shortcode');
+    add_shortcode('canvas_card', 'ui_panel_saas_canvas_card_shortcode');
+    add_shortcode('canvas_section', 'ui_panel_saas_canvas_section_shortcode');
 }
 add_action('init', 'ui_panel_saas_register_shortcodes');
 
@@ -540,6 +563,203 @@ function ui_panel_saas_button_shortcode($atts, $content = null) {
         <?php endif; ?>
         <?php echo do_shortcode($content); ?>
     </a>
+    <?php
+    return ob_get_clean();
+}
+
+/**
+ * Shortcode para crear una fila flex
+ */
+function ui_panel_saas_flex_row_shortcode($atts, $content = null) {
+    $atts = shortcode_atts(array(
+        'class' => '',
+        'justify' => '', // start, center, end, between, around, evenly
+        'align' => '',   // start, center, end, stretch
+        'gap' => '',     // 5, 10, 15, 20, 30
+        'style' => '',
+    ), $atts);
+    
+    $row_class = 'flex-row';
+    
+    if (!empty($atts['justify'])) {
+        $row_class .= ' justify-' . esc_attr($atts['justify']);
+    }
+    
+    if (!empty($atts['align'])) {
+        $row_class .= ' align-' . esc_attr($atts['align']);
+    }
+    
+    if (!empty($atts['gap'])) {
+        $row_class .= ' gap-' . esc_attr($atts['gap']);
+    }
+    
+    if (!empty($atts['class'])) {
+        $row_class .= ' ' . esc_attr($atts['class']);
+    }
+    
+    $style_attr = '';
+    if (!empty($atts['style'])) {
+        $style_attr = ' style="' . esc_attr($atts['style']) . '"';
+    }
+    
+    ob_start();
+    ?>
+    <div class="<?php echo esc_attr($row_class); ?>"<?php echo $style_attr; ?>>
+        <?php echo do_shortcode($content); ?>
+    </div>
+    <?php
+    return ob_get_clean();
+}
+
+/**
+ * Shortcode para crear una columna flex
+ */
+function ui_panel_saas_flex_column_shortcode($atts, $content = null) {
+    $atts = shortcode_atts(array(
+        'class' => '',
+        'justify' => '', // start, center, end, between, around, evenly
+        'align' => '',   // start, center, end, stretch
+        'gap' => '',     // 5, 10, 15, 20, 30
+        'style' => '',
+    ), $atts);
+    
+    $column_class = 'flex-column';
+    
+    if (!empty($atts['justify'])) {
+        $column_class .= ' justify-' . esc_attr($atts['justify']);
+    }
+    
+    if (!empty($atts['align'])) {
+        $column_class .= ' align-' . esc_attr($atts['align']);
+    }
+    
+    if (!empty($atts['gap'])) {
+        $column_class .= ' gap-' . esc_attr($atts['gap']);
+    }
+    
+    if (!empty($atts['class'])) {
+        $column_class .= ' ' . esc_attr($atts['class']);
+    }
+    
+    $style_attr = '';
+    if (!empty($atts['style'])) {
+        $style_attr = ' style="' . esc_attr($atts['style']) . '"';
+    }
+    
+    ob_start();
+    ?>
+    <div class="<?php echo esc_attr($column_class); ?>"<?php echo $style_attr; ?>>
+        <?php echo do_shortcode($content); ?>
+    </div>
+    <?php
+    return ob_get_clean();
+}
+
+/**
+ * Shortcode para elementos flex individuales
+ */
+function ui_panel_saas_flex_item_shortcode($atts, $content = null) {
+    $atts = shortcode_atts(array(
+        'size' => '12',    // 1-12 (sistema de rejilla)
+        'md' => '',        // tamaño en pantallas medianas
+        'class' => '',
+        'style' => '',
+    ), $atts);
+    
+    $item_class = 'flex-col-' . esc_attr($atts['size']);
+    
+    if (!empty($atts['md'])) {
+        $item_class .= ' flex-col-md-' . esc_attr($atts['md']);
+    }
+    
+    if (!empty($atts['class'])) {
+        $item_class .= ' ' . esc_attr($atts['class']);
+    }
+    
+    $style_attr = '';
+    if (!empty($atts['style'])) {
+        $style_attr = ' style="' . esc_attr($atts['style']) . '"';
+    }
+    
+    ob_start();
+    ?>
+    <div class="<?php echo esc_attr($item_class); ?>"<?php echo $style_attr; ?>>
+        <?php echo do_shortcode($content); ?>
+    </div>
+    <?php
+    return ob_get_clean();
+}
+
+/**
+ * Shortcode para tarjetas en Canvas
+ */
+function ui_panel_saas_canvas_card_shortcode($atts, $content = null) {
+    $atts = shortcode_atts(array(
+        'title' => '',
+        'icon' => '',
+        'class' => '',
+        'style' => '',
+    ), $atts);
+    
+    $card_class = 'canvas-card';
+    
+    if (!empty($atts['class'])) {
+        $card_class .= ' ' . esc_attr($atts['class']);
+    }
+    
+    $style_attr = '';
+    if (!empty($atts['style'])) {
+        $style_attr = ' style="' . esc_attr($atts['style']) . '"';
+    }
+    
+    ob_start();
+    ?>
+    <div class="<?php echo esc_attr($card_class); ?>"<?php echo $style_attr; ?>>
+        <?php if (!empty($atts['title'])) : ?>
+            <div class="canvas-card-header">
+                <?php if (!empty($atts['icon'])) : ?>
+                    <i class="ti <?php echo esc_attr($atts['icon']); ?> me-2"></i>
+                <?php endif; ?>
+                <h4 class="canvas-card-title"><?php echo esc_html($atts['title']); ?></h4>
+            </div>
+        <?php endif; ?>
+        <div class="canvas-card-body">
+            <?php echo do_shortcode($content); ?>
+        </div>
+    </div>
+    <?php
+    return ob_get_clean();
+}
+
+/**
+ * Shortcode para secciones en Canvas
+ */
+function ui_panel_saas_canvas_section_shortcode($atts, $content = null) {
+    $atts = shortcode_atts(array(
+        'title' => '',
+        'class' => '',
+        'style' => '',
+    ), $atts);
+    
+    $section_class = 'content-section';
+    
+    if (!empty($atts['class'])) {
+        $section_class .= ' ' . esc_attr($atts['class']);
+    }
+    
+    $style_attr = '';
+    if (!empty($atts['style'])) {
+        $style_attr = ' style="' . esc_attr($atts['style']) . '"';
+    }
+    
+    ob_start();
+    ?>
+    <div class="<?php echo esc_attr($section_class); ?>"<?php echo $style_attr; ?>>
+        <?php if (!empty($atts['title'])) : ?>
+            <h3 class="section-title"><?php echo esc_html($atts['title']); ?></h3>
+        <?php endif; ?>
+        <?php echo do_shortcode($content); ?>
+    </div>
     <?php
     return ob_get_clean();
 }
