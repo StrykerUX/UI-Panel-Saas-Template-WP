@@ -87,6 +87,9 @@ if (!function_exists('ui_panel_saas_setup')) :
         // Añadir soporte para bloque de estilos
         add_theme_support('wp-block-styles');
 
+        // Añadir soporte explícito para el plugin UI Panel SaaS Menu Manager
+        add_theme_support('ui-panel-saas-menu-manager');
+
         // Añadir paleta de colores del tema para el editor
         add_theme_support('editor-color-palette', array(
             array(
@@ -408,6 +411,14 @@ function ui_panel_saas_add_menu_icon($title, $item, $args, $depth) {
     return $menu_icon . $menu_text . $menu_arrow;
 }
 add_filter('nav_menu_item_title', 'ui_panel_saas_add_menu_icon', 10, 4);
+
+/**
+ * Permitir la integración del menú personalizado desde el plugin UI Panel SaaS Menu Manager
+ */
+function ui_panel_saas_menu_integration($args) {
+    return $args;
+}
+add_filter('wp_nav_menu_args', 'ui_panel_saas_menu_integration', 5);
 
 /**
  * Registrar shortcodes personalizados
