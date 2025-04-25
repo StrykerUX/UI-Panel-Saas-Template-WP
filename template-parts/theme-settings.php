@@ -241,43 +241,39 @@ if (!defined('ABSPATH')) {
     .color-option {
         width: 30px;
         height: 30px;
-        margin: 2px;
         border-radius: 50%;
-        border: 1px solid #dee2e6;
         cursor: pointer;
+        border: 1px solid #dee2e6;
         display: inline-flex;
         align-items: center;
         justify-content: center;
+        position: relative;
         transition: all 0.2s;
     }
     
     .color-option:hover {
-        border-width: 2px;
         transform: scale(1.1);
     }
     
     .color-option.border-3 {
-        border-color: var(--ui-panel-saas-primary, #4F46E5);
-        transform: scale(1.1);
+        border-color: var(--ui-panel-saas-primary, #4F46E5) !important;
     }
     
     .custom-color {
-        background: linear-gradient(135deg, #f5f5f5 0%, #f5f5f5 50%, #e0e0e0 50%, #e0e0e0 100%);
+        background: linear-gradient(45deg, #f44336, #ff9800, #ffeb3b, #4caf50, #2196f3, #673ab7);
         position: relative;
         overflow: hidden;
     }
     
     .custom-color i {
-        font-size: 18px;
-        color: #555;
+        color: white;
+        text-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
     }
     
     .custom-color-picker {
         position: absolute;
         width: 100%;
         height: 100%;
-        top: 0;
-        left: 0;
         opacity: 0;
         cursor: pointer;
     }
@@ -286,51 +282,36 @@ if (!defined('ABSPATH')) {
         display: none;
     }
     
+    .form-check-card-radio .form-check-input:checked+.form-check-label {
+        border-color: var(--ui-panel-saas-primary, #4F46E5) !important;
+    }
+    
     .form-check-card-radio .form-check-label {
         border: 1px solid #dee2e6;
-        border-radius: 0.25rem;
+        border-radius: 4px;
         padding: 1rem;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
         display: block;
         position: relative;
+        padding-left: 32px;
         cursor: pointer;
         transition: all 0.2s;
     }
     
-    .form-check-card-radio .form-check-input:checked + .form-check-label {
+    .form-check-card-radio .form-check-label:hover {
         border-color: var(--ui-panel-saas-primary, #4F46E5);
-        background-color: rgba(var(--ui-panel-saas-primary-rgb, 79, 70, 229), 0.1);
     }
     
-    /* Back to top button */
-    .back-to-top {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        width: 40px;
-        height: 40px;
+    .form-check-card-radio .form-check-input:checked+.form-check-label:before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
         background-color: var(--ui-panel-saas-primary, #4F46E5);
-        color: #fff;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        opacity: 0;
-        visibility: hidden;
-        transition: all 0.3s;
-        z-index: 999;
-    }
-    
-    .back-to-top.active {
-        opacity: 1;
-        visibility: visible;
-    }
-    
-    .back-to-top:hover {
-        background-color: var(--ui-panel-saas-primary-hover, #4338CA);
-        color: #fff;
     }
 </style>
 
@@ -339,12 +320,27 @@ if (!defined('ABSPATH')) {
         'use strict';
         
         $(document).ready(function() {
-            // Color option selection
+            // Theme mode change
+            $('input[name="theme-mode"]').on('change', function() {
+                var mode = $(this).val();
+                $('html').attr('data-bs-theme', mode);
+                
+                // Save to user preferences via AJAX
+                $.ajax({
+                    url: ui_panel_saas_vars.ajaxurl,
+                    type: 'POST',
+                    data: {
+                        action: 'ui_panel_saas_save_theme_mode',
+                        mode: mode,
+                        nonce: ui_panel_saas_vars.nonce
+                    }
+                });
+            });
+            
+            // Color scheme change
             $('.color-option:not(.custom-color)').on('click', function() {
                 var color = $(this).data('color');
-                updateThemeColor(color);
-                
-                // Update active state
+                updatePrimaryColor(color);
                 $('.color-option').removeClass('border-3');
                 $(this).addClass('border-3');
             });
@@ -352,176 +348,100 @@ if (!defined('ABSPATH')) {
             // Custom color picker
             $('.custom-color-picker').on('change', function() {
                 var color = $(this).val();
-                updateThemeColor(color);
-                
-                // Update active state
-                $('.color-option').removeClass('border-3');
-                $(this).parent().addClass('border-3');
-            });
-            
-            // Theme mode change
-            $('input[name="theme-mode"]').on('change', function() {
-                var mode = $(this).val();
-                updateThemeMode(mode);
+                updatePrimaryColor(color);
+                $('.color-option:not(.custom-color)').removeClass('border-3');
             });
             
             // Sidebar mode change
             $('input[name="sidebar-mode"]').on('change', function() {
                 var mode = $(this).val();
-                updateSidebarMode(mode);
+                $('html').attr('data-sidenav-size', mode);
+                
+                // Save to user preferences via AJAX
+                $.ajax({
+                    url: ui_panel_saas_vars.ajaxurl,
+                    type: 'POST',
+                    data: {
+                        action: 'ui_panel_saas_save_sidebar_mode',
+                        mode: mode,
+                        nonce: ui_panel_saas_vars.nonce
+                    }
+                });
             });
             
             // Layout width change
             $('input[name="layout-width"]').on('change', function() {
                 var width = $(this).val();
-                updateLayoutWidth(width);
+                if (width === 'boxed') {
+                    $('.wrapper').removeClass('container-fluid').addClass('container');
+                } else {
+                    $('.wrapper').removeClass('container').addClass('container-fluid');
+                }
+                
+                // Save to user preferences via AJAX
+                $.ajax({
+                    url: ui_panel_saas_vars.ajaxurl,
+                    type: 'POST',
+                    data: {
+                        action: 'ui_panel_saas_save_layout_width',
+                        width: width,
+                        nonce: ui_panel_saas_vars.nonce
+                    }
+                });
             });
             
             // Footer type change
             $('input[name="footer-type"]').on('change', function() {
                 var type = $(this).val();
-                updateFooterType(type);
+                
+                // Save to user preferences via AJAX
+                $.ajax({
+                    url: ui_panel_saas_vars.ajaxurl,
+                    type: 'POST',
+                    data: {
+                        action: 'ui_panel_saas_save_footer_type',
+                        type: type,
+                        nonce: ui_panel_saas_vars.nonce
+                    },
+                    success: function() {
+                        // Reload page to reflect footer change
+                        location.reload();
+                    }
+                });
             });
             
             // Reset theme settings
             $('#reset-theme-settings').on('click', function() {
-                resetThemeSettings();
-            });
-            
-            // Back to top button
-            $(window).scroll(function() {
-                if ($(this).scrollTop() > 300) {
-                    $('.back-to-top').addClass('active');
-                } else {
-                    $('.back-to-top').removeClass('active');
+                if (confirm('<?php echo esc_js(__('¿Estás seguro de que deseas restablecer todos los ajustes del tema a sus valores predeterminados?', 'ui-panel-saas')); ?>')) {
+                    $.ajax({
+                        url: ui_panel_saas_vars.ajaxurl,
+                        type: 'POST',
+                        data: {
+                            action: 'ui_panel_saas_reset_theme_settings',
+                            nonce: ui_panel_saas_vars.nonce
+                        },
+                        success: function() {
+                            // Reload page to reflect reset settings
+                            location.reload();
+                        }
+                    });
                 }
             });
             
-            $('.back-to-top').on('click', function(e) {
-                e.preventDefault();
-                $('html, body').animate({scrollTop: 0}, 300);
-                return false;
-            });
-            
-            // Functions to update theme settings
-            function updateThemeColor(color) {
+            // Helper function to update primary color
+            function updatePrimaryColor(color) {
                 document.documentElement.style.setProperty('--ui-panel-saas-primary', color);
                 
-                // Save to database via AJAX
+                // Save to user preferences via AJAX
                 $.ajax({
                     url: ui_panel_saas_vars.ajaxurl,
                     type: 'POST',
                     data: {
-                        action: 'ui_panel_saas_save_settings',
-                        setting: 'primary_color',
-                        value: color,
+                        action: 'ui_panel_saas_save_primary_color',
+                        color: color,
                         nonce: ui_panel_saas_vars.nonce
-                    },
-                    success: function(response) {
-                        console.log('Color updated:', response);
                     }
                 });
-            }
-            
-            function updateThemeMode(mode) {
-                $('html').attr('data-bs-theme', mode);
-                
-                // Save to database via AJAX
-                $.ajax({
-                    url: ui_panel_saas_vars.ajaxurl,
-                    type: 'POST',
-                    data: {
-                        action: 'ui_panel_saas_save_settings',
-                        setting: 'theme_mode',
-                        value: mode,
-                        nonce: ui_panel_saas_vars.nonce
-                    },
-                    success: function(response) {
-                        console.log('Theme mode updated:', response);
-                    }
-                });
-            }
-            
-            function updateSidebarMode(mode) {
-                $('html').attr('data-sidenav-size', mode);
-                
-                // Save to database via AJAX
-                $.ajax({
-                    url: ui_panel_saas_vars.ajaxurl,
-                    type: 'POST',
-                    data: {
-                        action: 'ui_panel_saas_save_settings',
-                        setting: 'sidebar_mode',
-                        value: mode,
-                        nonce: ui_panel_saas_vars.nonce
-                    },
-                    success: function(response) {
-                        console.log('Sidebar mode updated:', response);
-                    }
-                });
-            }
-            
-            function updateLayoutWidth(width) {
-                if (width === 'boxed') {
-                    $('.wrapper').addClass('container-fluid').removeClass('container-xxl');
-                } else {
-                    $('.wrapper').removeClass('container-fluid').addClass('container-xxl');
-                }
-                
-                // Save to database via AJAX
-                $.ajax({
-                    url: ui_panel_saas_vars.ajaxurl,
-                    type: 'POST',
-                    data: {
-                        action: 'ui_panel_saas_save_settings',
-                        setting: 'layout_width',
-                        value: width,
-                        nonce: ui_panel_saas_vars.nonce
-                    },
-                    success: function(response) {
-                        console.log('Layout width updated:', response);
-                    }
-                });
-            }
-            
-            function updateFooterType(type) {
-                // Save to database via AJAX
-                $.ajax({
-                    url: ui_panel_saas_vars.ajaxurl,
-                    type: 'POST',
-                    data: {
-                        action: 'ui_panel_saas_save_settings',
-                        setting: 'footer_type',
-                        value: type,
-                        nonce: ui_panel_saas_vars.nonce
-                    },
-                    success: function(response) {
-                        console.log('Footer type updated:', response);
-                        // Reload page to see changes
-                        location.reload();
-                    }
-                });
-            }
-            
-            function resetThemeSettings() {
-                // Reset to default values
-                updateThemeMode('light');
-                updateThemeColor('#4F46E5');
-                updateSidebarMode('default');
-                updateLayoutWidth('fluid');
-                updateFooterType('standard');
-                
-                // Update UI
-                $('input[name="theme-mode"][value="light"]').prop('checked', true);
-                $('input[name="sidebar-mode"][value="default"]').prop('checked', true);
-                $('input[name="layout-width"][value="fluid"]').prop('checked', true);
-                $('input[name="footer-type"][value="standard"]').prop('checked', true);
-                
-                $('.color-option').removeClass('border-3');
-                $('.color-option[data-color="#4F46E5"]').addClass('border-3');
-                
-                // Show success message
-                alert('<?php echo esc_js(__('Los ajustes del tema se han restablecido correctamente.', 'ui-panel-saas')); ?>');
             }
         });
     })(jQuery);
