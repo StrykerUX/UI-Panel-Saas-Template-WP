@@ -9,7 +9,7 @@ Un tema WordPress premium diseñado para aplicaciones SaaS y paneles de administ
 - **Diseño 100% responsivo** - Funciona perfectamente en dispositivos móviles, tablets y escritorio
 - **Panel de administración moderno** - Con widgets personalizables y gráficos interactivos
 - **Soporte para WooCommerce** - Integración perfecta con el comercio electrónico
-- **Múltiples plantillas de página** - Dashboard, perfiles, informes y más
+- **Múltiples plantillas de página** - Dashboard, Canvas, perfiles, informes y más
 - **Menú lateral personalizable** - Con soporte para múltiples niveles y iconos
 - **Tema oscuro/claro** - Soporte para cambiar entre modo claro y oscuro
 - **Altamente personalizable** - Opciones extensas del personalizador de WordPress
@@ -47,6 +47,7 @@ ui-panel-saas/
 │   └── template-tags.php          # Etiquetas de plantilla reutilizables
 ├── page-templates/                # Plantillas de página
 │   ├── dashboard.php              # Plantilla para el dashboard principal
+│   ├── canvas.php                 # Plantilla Canvas para layouts flexibles
 │   └── (futuras plantillas)
 ├── template-parts/                # Partes reutilizables de plantillas
 │   ├── content-none.php           # Para cuando no hay contenido
@@ -123,6 +124,37 @@ add_filter('ui_panel_saas_dashboard_income_data', function($data) {
 });
 ```
 
+### Canvas (canvas.php)
+Una plantilla flexible para crear diseños personalizados utilizando CSS Flexbox:
+
+- **Diseño de ancho completo** - 100% de ancho sin tener en cuenta el menú lateral.
+- **Layout flexible** - Utiliza CSS Flexbox para crear diseños complejos.
+- **Soporte para shortcodes** - Incluye shortcodes para facilitar la creación de layouts.
+- **Compatibilidad con plugins** - Funciona con shortcodes de plugins de terceros.
+- **Completamente responsivo** - Se adapta a cualquier tamaño de pantalla.
+
+#### Uso:
+1. Crea una nueva página en WordPress.
+2. En el panel de atributos de página, selecciona "Canvas" como plantilla.
+3. Utiliza los shortcodes incluidos para crear tu diseño o inserta shortcodes de otros plugins.
+4. Publica la página.
+
+#### Shortcodes disponibles:
+La plantilla Canvas incluye varios shortcodes para crear layouts flexibles:
+
+```
+[flex_row justify="between" align="center" gap="20"]
+  [flex_item size="6"]Contenido de la columna 1[/flex_item]
+  [flex_item size="6"]Contenido de la columna 2[/flex_item]
+[/flex_row]
+
+[canvas_card title="Mi tarjeta" icon="ti-info-circle"]
+  Este es el contenido de mi tarjeta.
+[/canvas_card]
+```
+
+Para obtener más información sobre la plantilla Canvas, consulta la [documentación detallada](docs/canvas-template.md).
+
 ## 🌈 Clases CSS y utilidades
 
 El tema utiliza un sistema de clases CSS basado en Bootstrap 5 con algunas personalizaciones adicionales:
@@ -142,6 +174,12 @@ El tema utiliza un sistema de clases CSS basado en Bootstrap 5 con algunas perso
 
 ### Clases de avatar
 - `.avatar-xs`, `.avatar-sm`, `.avatar-md`, `.avatar-lg`, `.avatar-xl` - Tamaños de avatar
+
+### Clases de layout flexible (plantilla Canvas)
+- `.flex-row`, `.flex-column` - Contenedores flexibles
+- `.flex-col-1` a `.flex-col-12` - Sistema de rejilla de 12 columnas
+- `.justify-start`, `.justify-center`, `.justify-end` - Alineación de elementos
+- `.align-start`, `.align-center`, `.align-end` - Alineación vertical
 
 ## ⚙️ Soporte para WooCommerce
 
@@ -256,6 +294,12 @@ Optimizaciones de rendimiento incorporadas:
 - Imágenes optimizadas
 
 ## 📜 Registro de cambios
+
+### Versión 1.1.0
+- Añadida plantilla Canvas para layouts flexibles
+- Nuevos shortcodes para sistema de rejilla flexible
+- Soporte mejorado para diseños responsivos
+- Documentación actualizada
 
 ### Versión 1.0.0
 - Lanzamiento inicial
