@@ -242,31 +242,55 @@ if (!defined('ABSPATH')) {
         width: 30px;
         height: 30px;
         border-radius: 50%;
-        margin-right: 10px;
         cursor: pointer;
         border: 1px solid #dee2e6;
-        position: relative;
-        overflow: hidden;
-        display: flex;
+        display: inline-flex;
         align-items: center;
         justify-content: center;
+        position: relative;
+        transition: all 0.2s;
+    }
+    
+    .color-option:hover {
+        transform: scale(1.1);
     }
     
     .color-option.border-3 {
-        border-width: 3px !important;
-        border-color: var(--ui-panel-saas-primary) !important;
+        border-color: var(--ui-panel-saas-primary, #4F46E5);
     }
     
     .custom-color {
-        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-        color: #6c757d;
+        background-color: transparent;
+        background-image: linear-gradient(45deg, #ff0000, #ff8000, #ffff00, #80ff00, #00ff00, #00ff80, #00ffff, #0080ff, #0000ff, #8000ff, #ff00ff, #ff0080);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .custom-color i {
+        position: absolute;
+        color: white;
+        text-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
     }
     
     .custom-color-picker {
         position: absolute;
         width: 100%;
         height: 100%;
+        top: 0;
+        left: 0;
         opacity: 0;
+        cursor: pointer;
+    }
+    
+    /* Card radio styles */
+    .card-radio {
+        background-color: var(--bs-card-bg);
+        border: 1px solid var(--bs-border-color);
+        border-radius: 0.25rem;
+        padding: 0.5rem;
+        overflow: hidden;
+        text-align: center;
+        position: relative;
         cursor: pointer;
     }
     
@@ -275,23 +299,176 @@ if (!defined('ABSPATH')) {
     }
     
     .card-radio .form-check-label {
-        border: 1px solid #dee2e6;
-        border-radius: 0.25rem;
-        padding: 1rem;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        display: block;
-        position: relative;
         cursor: pointer;
     }
     
     .card-radio .form-check-input:checked + .form-check-label {
-        border-color: var(--ui-panel-saas-primary);
-        background-color: rgba(var(--ui-panel-saas-primary-rgb), 0.1);
+        color: var(--ui-panel-saas-primary, #4F46E5);
     }
     
+    .card-radio .form-check-input:checked + .form-check-label:before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        border: 2px solid var(--ui-panel-saas-primary, #4F46E5);
+        border-radius: 0.25rem;
+        z-index: 1;
+    }
+    
+    /* Utilities */
     .avatar-md {
         height: 4rem;
     }
 </style>
+
+<script>
+    (function($) {
+        'use strict';
+        
+        $(document).ready(function() {
+            // Theme Mode Toggle
+            $('input[name="theme-mode"]').on('change', function() {
+                var mode = $(this).val();
+                $('html').attr('data-bs-theme', mode);
+                
+                // Save preference via AJAX
+                $.ajax({
+                    url: ui_panel_saas_vars.ajaxurl,
+                    type: 'POST',
+                    data: {
+                        action: 'ui_panel_saas_save_theme_mode',
+                        mode: mode,
+                        nonce: ui_panel_saas_vars.nonce
+                    }
+                });
+            });
+            
+            // Color Scheme Selection
+            $('.color-option').not('.custom-color').on('click', function() {
+                var color = $(this).data('color');
+                updatePrimaryColor(color);
+                
+                // Update UI
+                $('.color-option').removeClass('border-3');
+                $(this).addClass('border-3');
+            });
+            
+            // Custom Color Picker
+            $('.custom-color-picker').on('change', function() {
+                var color = $(this).val();
+                updatePrimaryColor(color);
+                
+                // Update UI
+                $('.color-option').removeClass('border-3');
+                $(this).parent().addClass('border-3');
+            });
+            
+            // Sidebar Mode Selection
+            $('input[name="sidebar-mode"]').on('change', function() {
+                var mode = $(this).val();
+                $('html').attr('data-sidenav-size', mode);
+                
+                // Save preference via AJAX
+                $.ajax({
+                    url: ui_panel_saas_vars.ajaxurl,
+                    type: 'POST',
+                    data: {
+                        action: 'ui_panel_saas_save_sidebar_mode',
+                        mode: mode,
+                        nonce: ui_panel_saas_vars.nonce
+                    }
+                });
+            });
+            
+            // Layout Width Selection
+            $('input[name="layout-width"]').on('change', function() {
+                var width = $(this).val();
+                
+                if (width === 'boxed') {
+                    $('.wrapper').addClass('container-fluid').removeClass('w-100');
+                } else {
+                    $('.wrapper').removeClass('container-fluid').addClass('w-100');
+                }
+                
+                // Save preference via AJAX
+                $.ajax({
+                    url: ui_panel_saas_vars.ajaxurl,
+                    type: 'POST',
+                    data: {
+                        action: 'ui_panel_saas_save_layout_width',
+                        width: width,
+                        nonce: ui_panel_saas_vars.nonce
+                    }
+                });
+            });
+            
+            // Footer Type Selection
+            $('input[name="footer-type"]').on('change', function() {
+                var type = $(this).val();
+                
+                // Save preference via AJAX
+                $.ajax({
+                    url: ui_panel_saas_vars.ajaxurl,
+                    type: 'POST',
+                    data: {
+                        action: 'ui_panel_saas_save_footer_type',
+                        type: type,
+                        nonce: ui_panel_saas_vars.nonce
+                    }
+                });
+            });
+            
+            // Reset Settings
+            $('#reset-theme-settings').on('click', function() {
+                // Reset theme mode
+                $('html').attr('data-bs-theme', 'light');
+                $('input[name="theme-mode"][value="light"]').prop('checked', true);
+                
+                // Reset primary color
+                updatePrimaryColor('#4F46E5');
+                $('.color-option').removeClass('border-3');
+                $('.color-option[data-color="#4F46E5"]').addClass('border-3');
+                
+                // Reset sidebar mode
+                $('html').attr('data-sidenav-size', 'default');
+                $('input[name="sidebar-mode"][value="default"]').prop('checked', true);
+                
+                // Reset layout width
+                $('.wrapper').removeClass('container-fluid').addClass('w-100');
+                $('input[name="layout-width"][value="fluid"]').prop('checked', true);
+                
+                // Reset footer type
+                $('input[name="footer-type"][value="standard"]').prop('checked', true);
+                
+                // Save reset preferences via AJAX
+                $.ajax({
+                    url: ui_panel_saas_vars.ajaxurl,
+                    type: 'POST',
+                    data: {
+                        action: 'ui_panel_saas_reset_theme_settings',
+                        nonce: ui_panel_saas_vars.nonce
+                    }
+                });
+            });
+            
+            // Helper function to update primary color
+            function updatePrimaryColor(color) {
+                document.documentElement.style.setProperty('--ui-panel-saas-primary', color);
+                
+                // Save preference via AJAX
+                $.ajax({
+                    url: ui_panel_saas_vars.ajaxurl,
+                    type: 'POST',
+                    data: {
+                        action: 'ui_panel_saas_save_primary_color',
+                        color: color,
+                        nonce: ui_panel_saas_vars.nonce
+                    }
+                });
+            }
+        });
+    })(jQuery);
+</script>
