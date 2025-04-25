@@ -1,0 +1,179 @@
+/**
+ * Estilos para la plantilla Canvas
+ *
+ * @package UI_Panel_SAAS
+ * @since 1.0.0
+ */
+
+/* Contenedor principal */
+.canvas-container {
+    width: 100%;
+    padding: 0;
+    overflow-x: hidden;
+}
+
+.canvas-wrapper {
+    width: 100%;
+    max-width: 1680px;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+.canvas-content {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+/* Clases de flexbox para usar con shortcodes */
+.flex-row {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.flex-column {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+/* Columnas con diferentes anchos */
+.flex-col-1 { flex: 0 0 8.333333%; max-width: 8.333333%; padding: 0 10px; }
+.flex-col-2 { flex: 0 0 16.666667%; max-width: 16.666667%; padding: 0 10px; }
+.flex-col-3 { flex: 0 0 25%; max-width: 25%; padding: 0 10px; }
+.flex-col-4 { flex: 0 0 33.333333%; max-width: 33.333333%; padding: 0 10px; }
+.flex-col-5 { flex: 0 0 41.666667%; max-width: 41.666667%; padding: 0 10px; }
+.flex-col-6 { flex: 0 0 50%; max-width: 50%; padding: 0 10px; }
+.flex-col-7 { flex: 0 0 58.333333%; max-width: 58.333333%; padding: 0 10px; }
+.flex-col-8 { flex: 0 0 66.666667%; max-width: 66.666667%; padding: 0 10px; }
+.flex-col-9 { flex: 0 0 75%; max-width: 75%; padding: 0 10px; }
+.flex-col-10 { flex: 0 0 83.333333%; max-width: 83.333333%; padding: 0 10px; }
+.flex-col-11 { flex: 0 0 91.666667%; max-width: 91.666667%; padding: 0 10px; }
+.flex-col-12 { flex: 0 0 100%; max-width: 100%; padding: 0 10px; }
+
+/* Contenedores para tarjetas y bloques de contenido */
+.canvas-card {
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.canvas-box {
+    padding: 15px;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+/* Alineación flexible */
+.justify-start { justify-content: flex-start; }
+.justify-center { justify-content: center; }
+.justify-end { justify-content: flex-end; }
+.justify-between { justify-content: space-between; }
+.justify-around { justify-content: space-around; }
+.justify-evenly { justify-content: space-evenly; }
+
+.align-start { align-items: flex-start; }
+.align-center { align-items: center; }
+.align-end { align-items: flex-end; }
+.align-stretch { align-items: stretch; }
+
+/* Espaciado */
+.gap-5 { gap: 5px; }
+.gap-10 { gap: 10px; }
+.gap-15 { gap: 15px; }
+.gap-20 { gap: 20px; }
+.gap-30 { gap: 30px; }
+
+/* Contenedores para bloques de contenido */
+.content-section {
+    margin-bottom: 30px;
+    width: 100%;
+}
+
+.content-block {
+    padding: 20px;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+/* Responsividad */
+@media (max-width: 992px) {
+    .flex-row {
+        flex-wrap: wrap;
+    }
+    
+    .flex-col-md-6 {
+        flex: 0 0 50%;
+        max-width: 50%;
+    }
+    
+    .flex-col-md-12 {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .canvas-wrapper {
+        padding: 0 10px;
+    }
+    
+    .flex-row {
+        flex-direction: column;
+    }
+    
+    [class*="flex-col-"] {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+}
+
+/* Compatibilidad con temas oscuros */
+[data-bs-theme="dark"] .canvas-card {
+    background-color: #2a2f34;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Estilos para contenedores de shortcodes */
+.shortcode-container {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+/* Estilos para listas y tablas en el canvas */
+.canvas-content ul,
+.canvas-content ol {
+    padding-left: 20px;
+    margin-bottom: 15px;
+}
+
+.canvas-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.canvas-content table th,
+.canvas-content table td {
+    padding: 8px 12px;
+    border: 1px solid #e0e0e0;
+}
+
+.canvas-content table th {
+    background-color: #f5f5f5;
+}
+
+[data-bs-theme="dark"] .canvas-content table th {
+    background-color: #353b43;
+}
+
+[data-bs-theme="dark"] .canvas-content table th,
+[data-bs-theme="dark"] .canvas-content table td {
+    border-color: #454d55;
+}
