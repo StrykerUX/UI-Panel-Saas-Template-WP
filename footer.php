@@ -1,11 +1,12 @@
 <?php
 /**
- * El pie de página para nuestro tema
+ * The template for displaying the footer
  *
- * Contiene el área de cierre del contenido y todos los scripts del pie de página
+ * Contains the closing of the #content div and all content after.
+ *
+ * @link https://developer.wordpress.org/themes/basics/template-files/#template-partials
  *
  * @package UI_Panel_SAAS
- * @since 1.0.0
  */
 
 // Evitar acceso directo al archivo
@@ -13,183 +14,136 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-// Obtener opciones del pie de página
-$show_footer = apply_filters('ui_panel_saas_show_footer', true);
-$footer_type = get_theme_mod('ui_panel_saas_footer_type', 'standard');
 ?>
+            </div><!-- .page-container -->
+        </div><!-- .page-content -->
+        <!-- ============================================================== -->
+        <!-- End Page content -->
+        <!-- ============================================================== -->
 
-                <?php if (function_exists('ui_panel_saas_content_bottom')) { ui_panel_saas_content_bottom(); } ?>
-            </div> <!-- container-fluid -->
-        </div> <!-- content -->
-
-        <?php if ($show_footer) : ?>
         <!-- Footer Start -->
         <footer class="footer">
             <div class="container-fluid">
                 <div class="row">
-                    
-                    <?php if ($footer_type === 'widgets' && (is_active_sidebar('footer-1') || is_active_sidebar('footer-2') || is_active_sidebar('footer-3'))) : ?>
-                    
-                    <div class="col-md-4">
-                        <?php if (is_active_sidebar('footer-1')) : ?>
-                        <div class="footer-widget-area">
-                            <?php dynamic_sidebar('footer-1'); ?>
-                        </div>
-                        <?php endif; ?>
-                    </div>
-                    
-                    <div class="col-md-4">
-                        <?php if (is_active_sidebar('footer-2')) : ?>
-                        <div class="footer-widget-area">
-                            <?php dynamic_sidebar('footer-2'); ?>
-                        </div>
-                        <?php endif; ?>
-                    </div>
-                    
-                    <div class="col-md-4">
-                        <?php if (is_active_sidebar('footer-3')) : ?>
-                        <div class="footer-widget-area">
-                            <?php dynamic_sidebar('footer-3'); ?>
-                        </div>
-                        <?php endif; ?>
-                    </div>
-                    
-                    <?php else : ?>
-                    
                     <div class="col-md-6">
-                        <div class="text-md-start text-center">
-                            <?php 
-                            $footer_copyright = get_theme_mod('ui_panel_saas_footer_copyright', sprintf(
-                                esc_html__('%1$s &copy; %2$s %3$s. Todos los derechos reservados.', 'ui-panel-saas'),
-                                date('Y'),
-                                get_bloginfo('name'),
-                                UI_PANEL_SAAS_VERSION
-                            ));
-                            
-                            echo wp_kses_post($footer_copyright);
-                            ?>
-                        </div>
+                        <?php 
+                        $footer_text = get_theme_mod('ui_panel_saas_footer_copyright', sprintf(
+                            /* translators: %s: Current year, site name */
+                            esc_html__('%1$s © %2$s - All rights reserved', 'ui-panel-saas'), 
+                            date('Y'), 
+                            get_bloginfo('name')
+                        ));
+                        echo wp_kses_post($footer_text);
+                        ?>
                     </div>
-                    
                     <div class="col-md-6">
-                        <div class="text-md-end text-center">
+                        <div class="text-md-end footer-links d-none d-md-block">
                             <?php
-                            $footer_credits = get_theme_mod('ui_panel_saas_footer_credits', sprintf(
-                                esc_html__('Desarrollado con %1$s por %2$s', 'ui-panel-saas'),
-                                '<i class="ri-heart-fill text-danger"></i>',
-                                '<a href="' . esc_url(home_url('/')) . '">' . get_bloginfo('name') . '</a>'
-                            ));
-                            
-                            echo wp_kses_post($footer_credits);
+                            if (has_nav_menu('footer')) {
+                                wp_nav_menu(array(
+                                    'theme_location' => 'footer',
+                                    'menu_class'     => 'list-inline mb-0',
+                                    'container'      => '',
+                                    'fallback_cb'    => false,
+                                    'depth'          => 1,
+                                    'items_wrap'     => '%3$s',
+                                    'walker'         => new UI_Panel_SAAS_Walker_Nav_Menu(),
+                                ));
+                            } else {
+                                // Menú predeterminado si no hay uno definido
+                                ?>
+                                <a href="javascript: void(0);"><?php esc_html_e('About Us', 'ui-panel-saas'); ?></a>
+                                <a href="javascript: void(0);"><?php esc_html_e('Help', 'ui-panel-saas'); ?></a>
+                                <a href="javascript: void(0);"><?php esc_html_e('Contact Us', 'ui-panel-saas'); ?></a>
+                                <?php
+                            }
                             ?>
                         </div>
                     </div>
-                    
-                    <?php endif; ?>
                 </div>
             </div>
         </footer>
         <!-- end Footer -->
-        <?php endif; ?>
+
+        <!-- Theme Settings -->
+        <div class="offcanvas offcanvas-end" tabindex="-1" id="theme-settings-offcanvas">
+            <div class="offcanvas-header border-bottom">
+                <h5 class="offcanvas-title" id="theme-settings-offcanvasLabel"><?php esc_html_e('Theme Settings', 'ui-panel-saas'); ?></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body p-0">
+                <div class="p-3">
+                    <h6 class="fw-medium fs-15 text-muted mb-2"><?php esc_html_e('Choose Mode', 'ui-panel-saas'); ?></h6>
+                    <div class="form-check form-switch mb-1">
+                        <input type="radio" class="form-check-input" name="data-bs-theme" id="layout-mode-light" value="light" <?php checked(get_theme_mod('ui_panel_saas_theme_mode', 'light'), 'light'); ?>>
+                        <label class="form-check-label" for="layout-mode-light"><?php esc_html_e('Light', 'ui-panel-saas'); ?></label>
+                    </div>
+                    <div class="form-check form-switch">
+                        <input type="radio" class="form-check-input" name="data-bs-theme" id="layout-mode-dark" value="dark" <?php checked(get_theme_mod('ui_panel_saas_theme_mode', 'light'), 'dark'); ?>>
+                        <label class="form-check-label" for="layout-mode-dark"><?php esc_html_e('Dark', 'ui-panel-saas'); ?></label>
+                    </div>
+
+                    <h6 class="fw-medium fs-15 text-muted mt-4 mb-2"><?php esc_html_e('Sidebar Size', 'ui-panel-saas'); ?></h6>
+                    <div class="form-check form-switch mb-1">
+                        <input type="radio" class="form-check-input" name="data-sidenav-size" id="sidenav-size-default" value="default" <?php checked(get_theme_mod('ui_panel_saas_sidebar_mode', 'default'), 'default'); ?>>
+                        <label class="form-check-label" for="sidenav-size-default"><?php esc_html_e('Default', 'ui-panel-saas'); ?></label>
+                    </div>
+                    <div class="form-check form-switch mb-1">
+                        <input type="radio" class="form-check-input" name="data-sidenav-size" id="sidenav-size-compact" value="compact" <?php checked(get_theme_mod('ui_panel_saas_sidebar_mode', 'default'), 'compact'); ?>>
+                        <label class="form-check-label" for="sidenav-size-compact"><?php esc_html_e('Compact', 'ui-panel-saas'); ?></label>
+                    </div>
+                    <div class="form-check form-switch mb-1">
+                        <input type="radio" class="form-check-input" name="data-sidenav-size" id="sidenav-size-condensed" value="condensed" <?php checked(get_theme_mod('ui_panel_saas_sidebar_mode', 'default'), 'condensed'); ?>>
+                        <label class="form-check-label" for="sidenav-size-condensed"><?php esc_html_e('Condensed', 'ui-panel-saas'); ?></label>
+                    </div>
+                    <div class="form-check form-switch mb-1">
+                        <input type="radio" class="form-check-input" name="data-sidenav-size" id="sidenav-size-full" value="full" <?php checked(get_theme_mod('ui_panel_saas_sidebar_mode', 'default'), 'full'); ?>>
+                        <label class="form-check-label" for="sidenav-size-full"><?php esc_html_e('Full', 'ui-panel-saas'); ?></label>
+                    </div>
+
+                    <h6 class="fw-medium fs-15 text-muted mt-4 mb-2"><?php esc_html_e('Layout Mode', 'ui-panel-saas'); ?></h6>
+                    <div class="form-check form-switch mb-1">
+                        <input type="radio" class="form-check-input" name="data-layout-mode" id="layout-width-fluid" value="fluid" <?php checked(get_theme_mod('ui_panel_saas_layout_mode', 'fluid'), 'fluid'); ?>>
+                        <label class="form-check-label" for="layout-width-fluid"><?php esc_html_e('Fluid', 'ui-panel-saas'); ?></label>
+                    </div>
+                    <div class="form-check form-switch mb-1">
+                        <input type="radio" class="form-check-input" name="data-layout-mode" id="layout-width-boxed" value="boxed" <?php checked(get_theme_mod('ui_panel_saas_layout_mode', 'fluid'), 'boxed'); ?>>
+                        <label class="form-check-label" for="layout-width-boxed"><?php esc_html_e('Boxed', 'ui-panel-saas'); ?></label>
+                    </div>
+
+                    <h6 class="fw-medium fs-15 text-muted mt-4 mb-2"><?php esc_html_e('Topbar Color', 'ui-panel-saas'); ?></h6>
+                    <div class="form-check form-switch mb-1">
+                        <input type="radio" class="form-check-input" name="data-topbar-color" id="topbar-color-light" value="light" <?php checked(get_theme_mod('ui_panel_saas_topbar_color', 'light'), 'light'); ?>>
+                        <label class="form-check-label" for="topbar-color-light"><?php esc_html_e('Light', 'ui-panel-saas'); ?></label>
+                    </div>
+                    <div class="form-check form-switch mb-1">
+                        <input type="radio" class="form-check-input" name="data-topbar-color" id="topbar-color-dark" value="dark" <?php checked(get_theme_mod('ui_panel_saas_topbar_color', 'light'), 'dark'); ?>>
+                        <label class="form-check-label" for="topbar-color-dark"><?php esc_html_e('Dark', 'ui-panel-saas'); ?></label>
+                    </div>
+
+                    <h6 class="fw-medium fs-15 text-muted mt-4 mb-2"><?php esc_html_e('Menu Color', 'ui-panel-saas'); ?></h6>
+                    <div class="form-check form-switch mb-1">
+                        <input type="radio" class="form-check-input" name="data-menu-color" id="menu-color-light" value="light" <?php checked(get_theme_mod('ui_panel_saas_menu_color', 'dark'), 'light'); ?>>
+                        <label class="form-check-label" for="menu-color-light"><?php esc_html_e('Light', 'ui-panel-saas'); ?></label>
+                    </div>
+                    <div class="form-check form-switch mb-1">
+                        <input type="radio" class="form-check-input" name="data-menu-color" id="menu-color-dark" value="dark" <?php checked(get_theme_mod('ui_panel_saas_menu_color', 'dark'), 'dark'); ?>>
+                        <label class="form-check-label" for="menu-color-dark"><?php esc_html_e('Dark', 'ui-panel-saas'); ?></label>
+                    </div>
+
+                    <div class="d-grid mt-4">
+                        <button class="btn btn-primary" id="reset-layout"><?php esc_html_e('Reset to Default', 'ui-panel-saas'); ?></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <?php ui_panel_saas_footer_bottom(); ?>
 
     </div>
-    <!-- ========== Content Wrapper End ========== -->
-</div>
-<!-- END wrapper -->
+    <!-- END wrapper -->
 
-<?php if (function_exists('ui_panel_saas_footer_bottom')) { ui_panel_saas_footer_bottom(); } ?>
-
-<!-- Right Sidebar -->
-<?php
-$show_right_sidebar = apply_filters('ui_panel_saas_show_right_sidebar', false);
-if ($show_right_sidebar) {
-    get_template_part('template-parts/right-sidebar');
-}
-?>
-<!-- /Right-bar -->
-
-<!-- Theme Settings -->
-<?php
-$show_theme_customizer = get_theme_mod('ui_panel_saas_show_theme_customizer', true);
-if ($show_theme_customizer) {
-    get_template_part('template-parts/theme-settings');
-}
-?>
-<!-- /Theme Settings -->
-
-<?php wp_footer(); ?>
-
-<!-- Custom Scripts -->
-<script type="text/javascript">
-    (function($) {
-        'use strict';
-        
-        $(document).ready(function() {
-            // Inicialización de toggles para modo claro/oscuro
-            $('.theme-mode-toggle').on('click', function(e) {
-                e.preventDefault();
-                
-                var currentMode = $('html').attr('data-bs-theme');
-                var newMode = (currentMode === 'dark') ? 'light' : 'dark';
-                
-                // Cambiar atributo HTML
-                $('html').attr('data-bs-theme', newMode);
-                
-                // Guardar preferencia de usuario con AJAX
-                $.ajax({
-                    url: ui_panel_saas_vars.ajaxurl,
-                    type: 'POST',
-                    data: {
-                        action: 'ui_panel_saas_save_theme_mode',
-                        mode: newMode,
-                        nonce: ui_panel_saas_vars.nonce
-                    },
-                    success: function(response) {
-                        if (response.success) {
-                            console.log('Modo de tema guardado: ' + newMode);
-                        }
-                    }
-                });
-            });
-            
-            // Toggle del menú lateral
-            $('.button-toggle-menu').on('click', function() {
-                $('body').toggleClass('sidebar-enable');
-            });
-            
-            // Tooltip initialization
-            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-                return new bootstrap.Tooltip(tooltipTriggerEl);
-            });
-            
-            // Popover initialization
-            var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
-            var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
-                return new bootstrap.Popover(popoverTriggerEl);
-            });
-            
-            // Manejo responsivo
-            function checkWindowSize() {
-                if ($(window).width() < 992) {
-                    $('body').addClass('sidebar-responsive');
-                } else {
-                    $('body').removeClass('sidebar-responsive');
-                }
-            }
-            
-            // Ejecutar en carga
-            checkWindowSize();
-            
-            // Ejecutar en cambio de tamaño
-            $(window).resize(function() {
-                checkWindowSize();
-            });
-            
-            <?php do_action('ui_panel_saas_footer_js'); ?>
-        });
-    })(jQuery);
-</script>
+    <?php wp_footer(); ?>
 
 </body>
 </html>
