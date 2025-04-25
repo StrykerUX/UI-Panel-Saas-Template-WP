@@ -1,0 +1,20 @@
+/*
+Theme Name: UI Panel SAAS
+Theme URI: https://github.com/StrykerUX/UI-Panel-Saas-Template-WP
+Author: StrykerUX
+Author URI: https://github.com/StrykerUX
+Description: Tema de WordPress para panel de administración SAAS basado en el template Boron. Enfocado en crear una interfaz moderna y funcional para aplicaciones SAAS.
+Version: 1.0.0
+Requires at least: 5.6
+Tested up to: 6.4
+Requires PHP: 7.4
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: ui-panel-saas
+Tags: saas, dashboard, admin-panel, dark-mode, responsive, bootstrap
+*/
+
+/* 
+Este archivo es solo para la identificación del tema.
+Los estilos reales se cargan desde los archivos en la carpeta assets/css
+*/
