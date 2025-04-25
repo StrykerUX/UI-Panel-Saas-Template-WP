@@ -242,49 +242,32 @@ if (!defined('ABSPATH')) {
         width: 30px;
         height: 30px;
         border-radius: 50%;
-        margin-right: 8px;
+        margin-right: 10px;
         cursor: pointer;
-        border: 1px solid #ccc;
-        display: inline-flex;
+        border: 1px solid #dee2e6;
+        position: relative;
+        overflow: hidden;
+        display: flex;
         align-items: center;
         justify-content: center;
-        color: #fff;
-        position: relative;
     }
     
     .color-option.border-3 {
-        border: 3px solid var(--ui-panel-saas-primary);
+        border-width: 3px !important;
+        border-color: var(--ui-panel-saas-primary) !important;
     }
     
     .custom-color {
-        background: linear-gradient(135deg, #f44336 0%, #2196f3 25%, #4caf50 50%, #ffeb3b 75%, #ff9800 100%);
-        overflow: hidden;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        color: #6c757d;
     }
     
     .custom-color-picker {
         position: absolute;
-        top: 0;
-        left: 0;
         width: 100%;
         height: 100%;
         opacity: 0;
         cursor: pointer;
-    }
-    
-    .card-radio {
-        background-color: var(--bs-body-bg);
-        border: 2px solid var(--bs-body-bg);
-        border-radius: 0.25rem;
-        padding: 1rem;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        display: block;
-        position: relative;
-    }
-    
-    .card-radio:hover {
-        border-color: var(--ui-panel-saas-primary);
     }
     
     .card-radio .form-check-input {
@@ -292,183 +275,23 @@ if (!defined('ABSPATH')) {
     }
     
     .card-radio .form-check-label {
+        border: 1px solid #dee2e6;
+        border-radius: 0.25rem;
+        padding: 1rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        display: block;
+        position: relative;
         cursor: pointer;
     }
     
-    .card-radio-label {
-        display: block;
-        width: 100%;
-        text-align: center;
-        font-weight: 500;
-    }
-    
     .card-radio .form-check-input:checked + .form-check-label {
-        color: var(--ui-panel-saas-primary);
-    }
-    
-    .card-radio .form-check-input:checked + .form-check-label:before {
-        content: '';
-        position: absolute;
-        top: 2px;
-        right: 2px;
-        width: 6px;
-        height: 6px;
-        border-radius: 50%;
-        background-color: var(--ui-panel-saas-primary);
+        border-color: var(--ui-panel-saas-primary);
+        background-color: rgba(var(--ui-panel-saas-primary-rgb), 0.1);
     }
     
     .avatar-md {
-        height: 4.5rem;
-        width: 4.5rem;
+        height: 4rem;
     }
 </style>
-
-<script>
-    // This script will run after the page loads to handle theme settings
-    document.addEventListener('DOMContentLoaded', function() {
-        // Theme mode toggle
-        const themeRadios = document.querySelectorAll('input[name="theme-mode"]');
-        themeRadios.forEach(radio => {
-            radio.addEventListener('change', function() {
-                const mode = this.value;
-                document.documentElement.setAttribute('data-bs-theme', mode);
-                
-                // Save the setting via AJAX
-                saveThemeSetting('ui_panel_saas_theme_mode', mode);
-            });
-        });
-        
-        // Color options
-        const colorOptions = document.querySelectorAll('.color-option:not(.custom-color)');
-        colorOptions.forEach(option => {
-            option.addEventListener('click', function() {
-                const color = this.getAttribute('data-color');
-                updatePrimaryColor(color);
-                
-                // Update active state
-                document.querySelectorAll('.color-option').forEach(opt => opt.classList.remove('border-3'));
-                this.classList.add('border-3');
-                
-                // Save the setting via AJAX
-                saveThemeSetting('ui_panel_saas_primary_color', color);
-            });
-        });
-        
-        // Custom color picker
-        const customColorPicker = document.querySelector('.custom-color-picker');
-        if (customColorPicker) {
-            customColorPicker.addEventListener('change', function() {
-                const color = this.value;
-                updatePrimaryColor(color);
-                
-                // Update active state
-                document.querySelectorAll('.color-option').forEach(opt => opt.classList.remove('border-3'));
-                this.closest('.color-option').classList.add('border-3');
-                
-                // Save the setting via AJAX
-                saveThemeSetting('ui_panel_saas_primary_color', color);
-            });
-        }
-        
-        // Sidebar mode options
-        const sidebarRadios = document.querySelectorAll('input[name="sidebar-mode"]');
-        sidebarRadios.forEach(radio => {
-            radio.addEventListener('change', function() {
-                const mode = this.value;
-                document.documentElement.setAttribute('data-sidenav-size', mode);
-                
-                // Save the setting via AJAX
-                saveThemeSetting('ui_panel_saas_sidebar_mode', mode);
-            });
-        });
-        
-        // Layout width options
-        const layoutWidthRadios = document.querySelectorAll('input[name="layout-width"]');
-        layoutWidthRadios.forEach(radio => {
-            radio.addEventListener('change', function() {
-                const width = this.value;
-                const containerClass = width === 'boxed' ? 'container' : 'container-fluid';
-                
-                // Update containers
-                document.querySelectorAll('.container-fluid').forEach(container => {
-                    container.className = containerClass;
-                });
-                
-                // Save the setting via AJAX
-                saveThemeSetting('ui_panel_saas_layout_width', width);
-            });
-        });
-        
-        // Footer type options
-        const footerTypeRadios = document.querySelectorAll('input[name="footer-type"]');
-        footerTypeRadios.forEach(radio => {
-            radio.addEventListener('change', function() {
-                // Save the setting via AJAX, page will need reload to show changes
-                saveThemeSetting('ui_panel_saas_footer_type', this.value);
-            });
-        });
-        
-        // Reset theme settings
-        const resetButton = document.getElementById('reset-theme-settings');
-        if (resetButton) {
-            resetButton.addEventListener('click', function() {
-                if (confirm('<?php echo esc_js(__('¿Estás seguro de que quieres restablecer todos los ajustes del tema?', 'ui-panel-saas')); ?>')) {
-                    // Reset to defaults
-                    document.documentElement.setAttribute('data-bs-theme', 'light');
-                    document.documentElement.setAttribute('data-sidenav-size', 'default');
-                    updatePrimaryColor('#4F46E5');
-                    
-                    // Reset all inputs
-                    document.getElementById('theme-mode-light').checked = true;
-                    document.getElementById('sidebar-option-default').checked = true;
-                    document.getElementById('layout-width-fluid').checked = true;
-                    document.getElementById('footer-type-standard').checked = true;
-                    
-                    document.querySelectorAll('.color-option').forEach(opt => opt.classList.remove('border-3'));
-                    document.querySelector('.color-option[data-color="#4F46E5"]').classList.add('border-3');
-                    
-                    // Save all settings via AJAX
-                    saveThemeSetting('ui_panel_saas_theme_mode', 'light');
-                    saveThemeSetting('ui_panel_saas_sidebar_mode', 'default');
-                    saveThemeSetting('ui_panel_saas_layout_width', 'fluid');
-                    saveThemeSetting('ui_panel_saas_primary_color', '#4F46E5');
-                    saveThemeSetting('ui_panel_saas_footer_type', 'standard');
-                    
-                    // Show success message
-                    alert('<?php echo esc_js(__('Los ajustes del tema se han restablecido correctamente.', 'ui-panel-saas')); ?>');
-                }
-            });
-        }
-        
-        // Function to update primary color CSS variables
-        function updatePrimaryColor(color) {
-            document.documentElement.style.setProperty('--ui-panel-saas-primary', color);
-        }
-        
-        // Function to save theme settings via AJAX
-        function saveThemeSetting(setting, value) {
-            const data = new FormData();
-            data.append('action', 'ui_panel_saas_save_theme_setting');
-            data.append('setting', setting);
-            data.append('value', value);
-            data.append('nonce', '<?php echo wp_create_nonce('ui-panel-saas-theme-settings'); ?>');
-            
-            fetch('<?php echo admin_url('admin-ajax.php'); ?>', {
-                method: 'POST',
-                credentials: 'same-origin',
-                body: data
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    console.log('Setting saved successfully:', setting);
-                } else {
-                    console.error('Error saving setting:', data.data);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-        }
-    });
-</script>
