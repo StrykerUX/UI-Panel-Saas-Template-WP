@@ -1,10 +1,10 @@
 <?php
 /**
- * El sidebar que contiene el área de widget principal
- * y la navegación lateral
+ * The sidebar containing the main widget area
+ *
+ * @link https://developer.wordpress.org/themes/basics/template-files/#template-partials
  *
  * @package UI_Panel_SAAS
- * @since 1.0.0
  */
 
 // Evitar acceso directo al archivo
@@ -12,197 +12,401 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-// Verificar si debemos mostrar la barra lateral
-// En algunas plantillas podríamos querer ocultarla
-$show_sidebar = apply_filters('ui_panel_saas_show_sidebar', true);
-
-if (!$show_sidebar) {
-    return;
-}
-
-// Obtener el modo de la barra lateral
+// Clase CSS para el elemento body
+$sidebar_class = '';
 $sidebar_mode = get_theme_mod('ui_panel_saas_sidebar_mode', 'default');
-$sidebar_class = 'leftside-menu';
 
-// Añadir clases basadas en el modo
 if ($sidebar_mode == 'condensed') {
-    $sidebar_class .= ' sidebar-condensed';
+    $sidebar_class = 'sidebar-condensed';
 } elseif ($sidebar_mode == 'compact') {
-    $sidebar_class .= ' sidebar-compact';
-} elseif ($sidebar_mode == 'hover') {
-    $sidebar_class .= ' sidebar-hover';
-} elseif ($sidebar_mode == 'icon-view') {
-    $sidebar_class .= ' sidebar-icon-view';
+    $sidebar_class = 'sidebar-compact';
+} elseif ($sidebar_mode == 'icon') {
+    $sidebar_class = 'sidebar-icon-only';
 }
+
 ?>
 
-<!-- ========== Left Sidebar Start ========== -->
-<div class="<?php echo esc_attr($sidebar_class); ?>">
+<!-- Sidenav Menu Start -->
+<div class="sidenav-menu">
     <!-- Brand Logo -->
-    <a href="<?php echo esc_url(home_url('/')); ?>" class="logo text-center logo-light">
-        <span class="logo-lg">
+    <a href="<?php echo esc_url(home_url('/')); ?>" class="logo">
+        <span class="logo-light">
             <?php
             $custom_logo_id = get_theme_mod('custom_logo');
             $logo = wp_get_attachment_image_src($custom_logo_id, 'full');
             
-            if (has_custom_logo()) :
-                echo '<img src="' . esc_url($logo[0]) . '" alt="' . get_bloginfo('name') . '" height="40">';
-            else :
+            if (has_custom_logo()) {
+                echo '<span class="logo-lg"><img src="' . esc_url($logo[0]) . '" alt="' . get_bloginfo('name') . '"></span>';
+                echo '<span class="logo-sm text-center">' . esc_html(substr(get_bloginfo('name'), 0, 2)) . '</span>';
+            } else {
+                echo '<span class="logo-lg">' . get_bloginfo('name') . '</span>';
+                echo '<span class="logo-sm text-center">' . esc_html(substr(get_bloginfo('name'), 0, 2)) . '</span>';
+            }
             ?>
-                <img src="<?php echo esc_url(get_template_directory_uri()); ?>/assets/images/logo.png" alt="<?php bloginfo('name'); ?>" height="40">
-            <?php endif; ?>
         </span>
-        <span class="logo-sm">
+
+        <span class="logo-dark">
             <?php
-            // Logo pequeño
-            $logo_sm_id = get_theme_mod('ui_panel_saas_logo_small');
-            $logo_sm = wp_get_attachment_image_src($logo_sm_id, 'full');
-            
-            if (!empty($logo_sm)) :
-                echo '<img src="' . esc_url($logo_sm[0]) . '" alt="' . get_bloginfo('name') . '" height="28">';
-            elseif (has_custom_logo()) :
-                echo '<img src="' . esc_url($logo[0]) . '" alt="' . get_bloginfo('name') . '" height="28">';
-            else :
+            if (has_custom_logo()) {
+                echo '<span class="logo-lg"><img src="' . esc_url($logo[0]) . '" alt="' . get_bloginfo('name') . '"></span>';
+                echo '<span class="logo-sm text-center">' . esc_html(substr(get_bloginfo('name'), 0, 2)) . '</span>';
+            } else {
+                echo '<span class="logo-lg">' . get_bloginfo('name') . '</span>';
+                echo '<span class="logo-sm text-center">' . esc_html(substr(get_bloginfo('name'), 0, 2)) . '</span>';
+            }
             ?>
-                <img src="<?php echo esc_url(get_template_directory_uri()); ?>/assets/images/logo-sm.png" alt="<?php bloginfo('name'); ?>" height="28">
-            <?php endif; ?>
         </span>
     </a>
 
-    <!-- Sidebar Hover/Toggle Button -->
-    <button type="button" class="btn btn-sm px-3 font-size-16 header-item vertical-menu-btn">
-        <i class="fa fa-fw fa-bars"></i>
+    <!-- Sidebar Hover Menu Toggle Button -->
+    <button class="button-sm-hover">
+        <i class="ti ti-circle align-middle"></i>
     </button>
 
-    <div class="h-100" id="leftside-menu-container" data-simplebar>
-        <!--- Sidemenu -->
-        <div id="sidebar-menu">
-            <?php
-            // Si hay un menú asignado a la ubicación de la barra lateral, lo mostramos
-            if (has_nav_menu('sidebar')) :
+    <!-- Full Sidebar Menu Close Button -->
+    <button class="button-close-fullsidebar">
+        <i class="ti ti-x align-middle"></i>
+    </button>
+
+    <div data-simplebar>
+        <!--- Sidenav Menu -->
+        <?php
+        // Verifica si hay un menú asociado a la ubicación 'sidebar'
+        if (has_nav_menu('sidebar')) {
+            wp_nav_menu(array(
+                'theme_location' => 'sidebar',
+                'menu_class'     => 'side-nav',
+                'container'      => '',
+                'fallback_cb'    => false,
+                'depth'          => 3,
+                'walker'         => new UI_Panel_SAAS_Walker_Nav_Menu(),
+            ));
+        } else {
+            // Menú de ejemplo si no hay un menú configurado
             ?>
-            <ul class="side-nav" id="side-menu">
-                <?php
-                wp_nav_menu(array(
-                    'theme_location' => 'sidebar',
-                    'container' => false,
-                    'menu_class' => '',
-                    'items_wrap' => '%3$s',
-                    'walker' => new UI_Panel_SAAS_Walker_Nav_Menu(),
-                    'fallback_cb' => false
-                ));
-                ?>
-            </ul>
-            <?php
-            // Si no hay menú asignado, mostramos un menú predeterminado
-            else :
-            ?>
-            <ul class="side-nav" id="side-menu">
-                <li class="side-nav-title">
-                    <?php echo esc_html__('NAVEGACIÓN', 'ui-panel-saas'); ?>
-                </li>
-                
+            <ul class="side-nav">
                 <li class="side-nav-item">
                     <a href="<?php echo esc_url(home_url('/')); ?>" class="side-nav-link">
-                        <i class="ri-dashboard-line"></i>
-                        <span> <?php echo esc_html__('Dashboard', 'ui-panel-saas'); ?> </span>
+                        <span class="menu-icon"><i class="ti ti-dashboard"></i></span>
+                        <span class="menu-text"> <?php esc_html_e('Dashboard', 'ui-panel-saas'); ?> </span>
+                        <span class="badge bg-success rounded-pill">5</span>
                     </a>
                 </li>
 
-                <li class="side-nav-title">
-                    <?php echo esc_html__('APPS & PAGES', 'ui-panel-saas'); ?>
-                </li>
-                
-                <?php if (class_exists('WooCommerce')) : ?>
+                <li class="side-nav-title mt-2"><?php esc_html_e('Apps & Pages', 'ui-panel-saas'); ?></li>
+
                 <li class="side-nav-item">
-                    <a href="javascript:void(0);" class="side-nav-link">
-                        <i class="ri-shopping-bag-3-line"></i>
-                        <span> <?php echo esc_html__('Ecommerce', 'ui-panel-saas'); ?> </span>
+                    <a href="#" class="side-nav-link">
+                        <span class="menu-icon"><i class="ti ti-message-filled"></i></span>
+                        <span class="menu-text"> <?php esc_html_e('Chat', 'ui-panel-saas'); ?> </span>
+                    </a>
+                </li>
+
+                <li class="side-nav-item">
+                    <a href="#" class="side-nav-link">
+                        <span class="menu-icon"><i class="ti ti-calendar-filled"></i></span>
+                        <span class="menu-text"> <?php esc_html_e('Calendar', 'ui-panel-saas'); ?> </span>
+                    </a>
+                </li>
+
+                <li class="side-nav-item">
+                    <a href="#" class="side-nav-link">
+                        <span class="menu-icon"><i class="ti ti-inbox"></i></span>
+                        <span class="menu-text"> <?php esc_html_e('Email', 'ui-panel-saas'); ?> </span>
+                    </a>
+                </li>
+
+                <li class="side-nav-item">
+                    <a href="#" class="side-nav-link">
+                        <span class="menu-icon"><i class="ti ti-folder-filled"></i></span>
+                        <span class="menu-text"> <?php esc_html_e('File Manager', 'ui-panel-saas'); ?> </span>
+                    </a>
+                </li>
+
+                <li class="side-nav-item">
+                    <a data-bs-toggle="collapse" href="#sidebarEcommerce" aria-expanded="false" aria-controls="sidebarEcommerce" class="side-nav-link">
+                        <span class="menu-icon"><i class="ti ti-basket-filled"></i></span>
+                        <span class="menu-text"> <?php esc_html_e('Ecommerce', 'ui-panel-saas'); ?> </span>
                         <span class="menu-arrow"></span>
                     </a>
-                    <ul class="side-nav-second-level" aria-expanded="false">
-                        <li>
-                            <a href="<?php echo esc_url(wc_get_page_permalink('shop')); ?>"><?php echo esc_html__('Productos', 'ui-panel-saas'); ?></a>
-                        </li>
-                        <li>
-                            <a href="<?php echo esc_url(wc_get_account_endpoint_url('orders')); ?>"><?php echo esc_html__('Mis Pedidos', 'ui-panel-saas'); ?></a>
-                        </li>
-                        <li>
-                            <a href="<?php echo esc_url(wc_get_cart_url()); ?>"><?php echo esc_html__('Carrito', 'ui-panel-saas'); ?></a>
-                        </li>
-                    </ul>
+                    <div class="collapse" id="sidebarEcommerce">
+                        <ul class="sub-menu">
+                            <li class="side-nav-item">
+                                <a href="#" class="side-nav-link">
+                                    <span class="menu-text"><?php esc_html_e('Products', 'ui-panel-saas'); ?></span>
+                                </a>
+                            </li>
+                            <li class="side-nav-item">
+                                <a href="#" class="side-nav-link">
+                                    <span class="menu-text"><?php esc_html_e('Products Grid', 'ui-panel-saas'); ?></span>
+                                </a>
+                            </li>
+                            <li class="side-nav-item">
+                                <a href="#" class="side-nav-link">
+                                    <span class="menu-text"><?php esc_html_e('Product Details', 'ui-panel-saas'); ?></span>
+                                </a>
+                            </li>
+                            <li class="side-nav-item">
+                                <a href="#" class="side-nav-link">
+                                    <span class="menu-text"><?php esc_html_e('Add Products', 'ui-panel-saas'); ?></span>
+                                </a>
+                            </li>
+                            <li class="side-nav-item">
+                                <a href="#" class="side-nav-link">
+                                    <span class="menu-text"><?php esc_html_e('Categories', 'ui-panel-saas'); ?></span>
+                                </a>
+                            </li>
+                            <li class="side-nav-item">
+                                <a href="#" class="side-nav-link">
+                                    <span class="menu-text"><?php esc_html_e('Orders', 'ui-panel-saas'); ?></span>
+                                </a>
+                            </li>
+                            <li class="side-nav-item">
+                                <a href="#" class="side-nav-link">
+                                    <span class="menu-text"><?php esc_html_e('Order Details', 'ui-panel-saas'); ?></span>
+                                </a>
+                            </li>
+                            <li class="side-nav-item">
+                                <a href="#" class="side-nav-link">
+                                    <span class="menu-text"><?php esc_html_e('Customers', 'ui-panel-saas'); ?></span>
+                                </a>
+                            </li>
+                            <li class="side-nav-item">
+                                <a href="#" class="side-nav-link">
+                                    <span class="menu-text"><?php esc_html_e('Sellers', 'ui-panel-saas'); ?></span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                 </li>
-                <?php endif; ?>
-                
-                <?php
-                // Lista de páginas para el menú
-                $menu_pages = get_pages(array(
-                    'sort_column' => 'menu_order',
-                    'number' => 5,
-                ));
-                
-                if (!empty($menu_pages)) :
-                ?>
+
                 <li class="side-nav-item">
-                    <a href="javascript:void(0);" class="side-nav-link">
-                        <i class="ri-pages-line"></i>
-                        <span> <?php echo esc_html__('Páginas', 'ui-panel-saas'); ?> </span>
+                    <a data-bs-toggle="collapse" href="#sidebarPages" aria-expanded="false" aria-controls="sidebarPages" class="side-nav-link">
+                        <span class="menu-icon"><i class="ti ti-files"></i></span>
+                        <span class="menu-text"> <?php esc_html_e('Pages', 'ui-panel-saas'); ?> </span>
                         <span class="menu-arrow"></span>
                     </a>
-                    <ul class="side-nav-second-level" aria-expanded="false">
-                        <?php foreach ($menu_pages as $menu_page) : ?>
-                        <li>
-                            <a href="<?php echo esc_url(get_permalink($menu_page->ID)); ?>"><?php echo esc_html($menu_page->post_title); ?></a>
-                        </li>
-                        <?php endforeach; ?>
-                    </ul>
+                    <div class="collapse" id="sidebarPages">
+                        <ul class="sub-menu">
+                            <li class="side-nav-item">
+                                <a href="#" class="side-nav-link">
+                                    <span class="menu-text"><?php esc_html_e('Starter Page', 'ui-panel-saas'); ?></span>
+                                </a>
+                            </li>
+                            <li class="side-nav-item">
+                                <a href="#" class="side-nav-link">
+                                    <span class="menu-text"><?php esc_html_e('FAQ', 'ui-panel-saas'); ?></span>
+                                </a>
+                            </li>
+                            <li class="side-nav-item">
+                                <a href="#" class="side-nav-link">
+                                    <span class="menu-text"><?php esc_html_e('Timeline', 'ui-panel-saas'); ?></span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                 </li>
-                <?php endif; ?>
-                
-                <?php if (is_user_logged_in() && current_user_can('edit_posts')) : ?>
-                <li class="side-nav-title">
-                    <?php echo esc_html__('ADMINISTRACIÓN', 'ui-panel-saas'); ?>
+
+                <li class="side-nav-title mt-2"><?php esc_html_e('Components', 'ui-panel-saas'); ?></li>
+
+                <li class="side-nav-item">
+                    <a data-bs-toggle="collapse" href="#sidebarBaseUI" aria-expanded="false" aria-controls="sidebarBaseUI" class="side-nav-link">
+                        <span class="menu-icon"><i class="ti ti-brightness-filled"></i></span>
+                        <span class="menu-text"> <?php esc_html_e('Base UI', 'ui-panel-saas'); ?> </span>
+                        <span class="menu-arrow"></span>
+                    </a>
+                    <div class="collapse" id="sidebarBaseUI">
+                        <ul class="sub-menu">
+                            <li class="side-nav-item">
+                                <a href="#" class="side-nav-link">
+                                    <span class="menu-text"><?php esc_html_e('Accordions', 'ui-panel-saas'); ?></span>
+                                </a>
+                            </li>
+                            <li class="side-nav-item">
+                                <a href="#" class="side-nav-link">
+                                    <span class="menu-text"><?php esc_html_e('Alerts', 'ui-panel-saas'); ?></span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+
+                <li class="side-nav-item">
+                    <a data-bs-toggle="collapse" href="#sidebarExtendedUI" aria-expanded="false" aria-controls="sidebarExtendedUI" class="side-nav-link">
+                        <span class="menu-icon"><i class="ti ti-alien-filled"></i></span>
+                        <span class="menu-text"> <?php esc_html_e('Extended UI', 'ui-panel-saas'); ?> </span>
+                        <span class="menu-arrow"></span>
+                    </a>
+                    <div class="collapse" id="sidebarExtendedUI">
+                        <ul class="sub-menu">
+                            <li class="side-nav-item">
+                                <a href="#" class="side-nav-link">
+                                    <span class="menu-text"><?php esc_html_e('Sweet Alerts', 'ui-panel-saas'); ?></span>
+                                </a>
+                            </li>
+                            <li class="side-nav-item">
+                                <a href="#" class="side-nav-link">
+                                    <span class="menu-text"><?php esc_html_e('Ratings', 'ui-panel-saas'); ?></span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                 </li>
                 
                 <li class="side-nav-item">
-                    <a href="<?php echo esc_url(admin_url('edit.php')); ?>" class="side-nav-link">
-                        <i class="ri-article-line"></i>
-                        <span> <?php echo esc_html__('Posts', 'ui-panel-saas'); ?> </span>
+                    <a data-bs-toggle="collapse" href="#sidebarIcons" aria-expanded="false" aria-controls="sidebarIcons" class="side-nav-link">
+                        <span class="menu-icon"><i class="ti ti-leaf"></i></span>
+                        <span class="menu-text"> <?php esc_html_e('Icons', 'ui-panel-saas'); ?> </span>
+                        <span class="menu-arrow"></span>
                     </a>
+                    <div class="collapse" id="sidebarIcons">
+                        <ul class="sub-menu">
+                            <li class="side-nav-item">
+                                <a href="#" class="side-nav-link">
+                                    <span class="menu-text"><?php esc_html_e('Tabler', 'ui-panel-saas'); ?></span>
+                                </a>
+                            </li>
+                            <li class="side-nav-item">
+                                <a href="#" class="side-nav-link">
+                                    <span class="menu-text"><?php esc_html_e('Solar', 'ui-panel-saas'); ?></span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                 </li>
-                
+
                 <li class="side-nav-item">
-                    <a href="<?php echo esc_url(admin_url('edit.php?post_type=page')); ?>" class="side-nav-link">
-                        <i class="ri-pages-line"></i>
-                        <span> <?php echo esc_html__('Páginas', 'ui-panel-saas'); ?> </span>
+                    <a data-bs-toggle="collapse" href="#sidebarCharts" aria-expanded="false" aria-controls="sidebarCharts" class="side-nav-link">
+                        <span class="menu-icon"><i class="ti ti-chart-arcs"></i></span>
+                        <span class="menu-text"> <?php esc_html_e('Charts', 'ui-panel-saas'); ?> </span>
+                        <span class="menu-arrow"></span>
                     </a>
+                    <div class="collapse" id="sidebarCharts">
+                        <ul class="sub-menu">
+                            <li class="side-nav-item">
+                                <a href="#" class="side-nav-link">
+                                    <span class="menu-text"><?php esc_html_e('Area', 'ui-panel-saas'); ?></span>
+                                </a>
+                            </li>
+                            <li class="side-nav-item">
+                                <a href="#" class="side-nav-link">
+                                    <span class="menu-text"><?php esc_html_e('Bar', 'ui-panel-saas'); ?></span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                 </li>
-                
-                <?php if (current_user_can('manage_options')) : ?>
+
                 <li class="side-nav-item">
-                    <a href="<?php echo esc_url(admin_url('customize.php')); ?>" class="side-nav-link">
-                        <i class="ri-palette-line"></i>
-                        <span> <?php echo esc_html__('Personalizar', 'ui-panel-saas'); ?> </span>
+                    <a data-bs-toggle="collapse" href="#sidebarForms" aria-expanded="false" aria-controls="sidebarForms" class="side-nav-link">
+                        <span class="menu-icon"><i class="ti ti-forms"></i></span>
+                        <span class="menu-text"> <?php esc_html_e('Forms', 'ui-panel-saas'); ?> </span>
+                        <span class="menu-arrow"></span>
                     </a>
+                    <div class="collapse" id="sidebarForms">
+                        <ul class="sub-menu">
+                            <li class="side-nav-item">
+                                <a href="#" class="side-nav-link">
+                                    <span class="menu-text"><?php esc_html_e('Form Elements', 'ui-panel-saas'); ?></span>
+                                </a>
+                            </li>
+                            <li class="side-nav-item">
+                                <a href="#" class="side-nav-link">
+                                    <span class="menu-text"><?php esc_html_e('Validation', 'ui-panel-saas'); ?></span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                 </li>
-                <?php endif; ?>
-                <?php endif; ?>
+
+                <li class="side-nav-item">
+                    <a data-bs-toggle="collapse" href="#sidebarTables" aria-expanded="false" aria-controls="sidebarTables" class="side-nav-link">
+                        <span class="menu-icon"><i class="ti ti-table-filled"></i></span>
+                        <span class="menu-text"> <?php esc_html_e('Tables', 'ui-panel-saas'); ?> </span>
+                        <span class="menu-arrow"></span>
+                    </a>
+                    <div class="collapse" id="sidebarTables">
+                        <ul class="sub-menu">
+                            <li class="side-nav-item">
+                                <a href="#" class="side-nav-link">
+                                    <span class="menu-text"><?php esc_html_e('Basic Tables', 'ui-panel-saas'); ?></span>
+                                </a>
+                            </li>
+                            <li class="side-nav-item">
+                                <a href="#" class="side-nav-link">
+                                    <span class="menu-text"><?php esc_html_e('Data Tables', 'ui-panel-saas'); ?></span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+
+                <li class="side-nav-item">
+                    <a data-bs-toggle="collapse" href="#sidebarMaps" aria-expanded="false" aria-controls="sidebarMaps" class="side-nav-link">
+                        <span class="menu-icon"><i class="ti ti-map-pin-filled"></i></span>
+                        <span class="menu-text"> <?php esc_html_e('Maps', 'ui-panel-saas'); ?> </span>
+                        <span class="menu-arrow"></span>
+                    </a>
+                    <div class="collapse" id="sidebarMaps">
+                        <ul class="sub-menu">
+                            <li class="side-nav-item">
+                                <a href="#" class="side-nav-link">
+                                    <span class="menu-text"><?php esc_html_e('Google Maps', 'ui-panel-saas'); ?></span>
+                                </a>
+                            </li>
+                            <li class="side-nav-item">
+                                <a href="#" class="side-nav-link">
+                                    <span class="menu-text"><?php esc_html_e('Vector Maps', 'ui-panel-saas'); ?></span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+
+                <li class="side-nav-title mt-2"><?php esc_html_e('More', 'ui-panel-saas'); ?></li>
+
+                <li class="side-nav-item">
+                    <a data-bs-toggle="collapse" href="#sidebarMultiLevel" aria-expanded="false" aria-controls="sidebarMultiLevel" class="side-nav-link">
+                        <span class="menu-icon"><i class="ti ti-box-multiple-3"></i></span>
+                        <span class="menu-text"> <?php esc_html_e('Multi Level', 'ui-panel-saas'); ?> </span>
+                        <span class="menu-arrow"></span>
+                    </a>
+                    <div class="collapse" id="sidebarMultiLevel">
+                        <ul class="sub-menu">
+                            <li class="side-nav-item">
+                                <a href="#" class="side-nav-link">
+                                    <span class="menu-text"><?php esc_html_e('Level 1.1', 'ui-panel-saas'); ?></span>
+                                </a>
+                            </li>
+                            <li class="side-nav-item">
+                                <a data-bs-toggle="collapse" href="#sidebarSecondLevel" aria-expanded="false" aria-controls="sidebarSecondLevel" class="side-nav-link">
+                                    <span class="menu-text"> <?php esc_html_e('Level 1.2', 'ui-panel-saas'); ?> </span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <div class="collapse" id="sidebarSecondLevel">
+                                    <ul class="sub-menu">
+                                        <li class="side-nav-item">
+                                            <a href="#" class="side-nav-link">
+                                                <span class="menu-text"><?php esc_html_e('Level 2.1', 'ui-panel-saas'); ?></span>
+                                            </a>
+                                        </li>
+                                        <li class="side-nav-item">
+                                            <a href="#" class="side-nav-link">
+                                                <span class="menu-text"><?php esc_html_e('Level 2.2', 'ui-panel-saas'); ?></span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
             </ul>
-            <?php endif; ?>
-        </div>
-        <!-- End Sidebar -->
+            <?php
+        }
+        ?>
 
         <div class="clearfix"></div>
     </div>
-    <!-- Sidebar -left -->
-
-    <?php
-    // Widget área en la parte inferior del sidebar
-    if (is_active_sidebar('sidebar-1')) :
-    ?>
-    <div class="sidebar-footer">
-        <?php dynamic_sidebar('sidebar-1'); ?>
-    </div>
-    <?php endif; ?>
 </div>
-<!-- Left Sidebar End -->
+<!-- Sidenav Menu End -->
