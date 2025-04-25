@@ -241,58 +241,6 @@ function ui_panel_saas_add_html_attributes($output) {
 add_filter('language_attributes', 'ui_panel_saas_add_html_attributes');
 
 /**
- * Agregar cuerpo de clases personalizadas
- */
-function ui_panel_saas_body_classes($classes) {
-    // Agregar clase basada en la barra lateral
-    if (is_active_sidebar('sidebar-1')) {
-        $classes[] = 'has-sidebar';
-    } else {
-        $classes[] = 'no-sidebar';
-    }
-
-    // Clase para el modo de tema
-    $theme_mode = get_theme_mod('ui_panel_saas_theme_mode', 'light');
-    $classes[] = 'theme-' . $theme_mode;
-
-    // Clase para el tipo de página
-    if (is_front_page() && is_home()) {
-        $classes[] = 'home-blog';
-    } elseif (is_front_page()) {
-        $classes[] = 'home-page';
-    } elseif (is_home()) {
-        $classes[] = 'blog-page';
-    }
-
-    // Si es una página del panel de control
-    if (is_page_template('page-templates/dashboard.php')) {
-        $classes[] = 'dashboard-page';
-    }
-
-    return $classes;
-}
-add_filter('body_class', 'ui_panel_saas_body_classes');
-
-/**
- * Optimización de carga de recursos
- */
-function ui_panel_saas_resource_hints($urls, $relation_type) {
-    if ('preconnect' === $relation_type) {
-        // Agrega googleapis para fuentes
-        $urls[] = array(
-            'href' => 'https://fonts.googleapis.com',
-            'crossorigin',
-        );
-        $urls[] = array(
-            'href' => 'https://fonts.gstatic.com',
-            'crossorigin',
-        );
-    }
-    return $urls;
-}
-add_filter('wp_resource_hints', 'ui_panel_saas_resource_hints', 10, 2);
-
-/**
  * Función para determinar si se está usando un layout oscuro
  */
 function ui_panel_saas_is_dark_mode() {
