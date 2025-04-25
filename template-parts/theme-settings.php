@@ -242,52 +242,46 @@ if (!defined('ABSPATH')) {
         width: 30px;
         height: 30px;
         border-radius: 50%;
+        margin-right: 5px;
         cursor: pointer;
-        border: 1px solid #dee2e6;
-        display: inline-flex;
+        display: flex;
         align-items: center;
         justify-content: center;
+        border: 1px solid rgba(0,0,0,0.1);
         position: relative;
-        transition: all 0.2s;
-    }
-    
-    .color-option:hover {
-        transform: scale(1.1);
     }
     
     .color-option.border-3 {
-        border-color: var(--ui-panel-saas-primary, #4F46E5) !important;
+        border: 3px solid var(--ui-panel-saas-primary, #4F46E5);
     }
     
     .custom-color {
-        background: linear-gradient(45deg, #f44336, #ff9800, #ffeb3b, #4caf50, #2196f3, #673ab7);
+        background: linear-gradient(45deg, #ff0000, #00ff00, #0000ff);
         position: relative;
         overflow: hidden;
     }
     
     .custom-color i {
         color: white;
-        text-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+        text-shadow: 0 0 2px rgba(0,0,0,0.5);
     }
     
     .custom-color-picker {
         position: absolute;
+        top: 0;
+        left: 0;
         width: 100%;
         height: 100%;
         opacity: 0;
         cursor: pointer;
     }
     
-    .form-check-card-radio .form-check-input {
+    .card-radio .form-check-input {
         display: none;
     }
     
-    .form-check-card-radio .form-check-input:checked+.form-check-label {
-        border-color: var(--ui-panel-saas-primary, #4F46E5) !important;
-    }
-    
-    .form-check-card-radio .form-check-label {
-        border: 1px solid #dee2e6;
+    .card-radio .form-check-label {
+        border: 1px solid rgba(0,0,0,0.1);
         border-radius: 4px;
         padding: 1rem;
         overflow: hidden;
@@ -295,153 +289,225 @@ if (!defined('ABSPATH')) {
         white-space: nowrap;
         display: block;
         position: relative;
-        padding-left: 32px;
         cursor: pointer;
-        transition: all 0.2s;
     }
     
-    .form-check-card-radio .form-check-label:hover {
+    .card-radio .form-check-input:checked + .form-check-label {
         border-color: var(--ui-panel-saas-primary, #4F46E5);
+        background-color: rgba(var(--ui-panel-saas-primary-rgb, 79, 70, 229), 0.1);
     }
     
-    .form-check-card-radio .form-check-input:checked+.form-check-label:before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 4px;
-        height: 100%;
+    /* Back to top button */
+    .back-to-top {
+        position: fixed;
+        bottom: 80px;
+        right: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
         background-color: var(--ui-panel-saas-primary, #4F46E5);
+        color: white;
+        text-decoration: none;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s, visibility 0.3s;
+        z-index: 99;
+    }
+    
+    .back-to-top.active {
+        opacity: 1;
+        visibility: visible;
+    }
+    
+    .back-to-top:hover {
+        background-color: rgba(var(--ui-panel-saas-primary-rgb, 79, 70, 229), 0.9);
+        color: white;
     }
 </style>
 
-<script>
+<script type="text/javascript">
     (function($) {
         'use strict';
         
         $(document).ready(function() {
-            // Theme mode change
+            // Theme Mode Toggle
             $('input[name="theme-mode"]').on('change', function() {
                 var mode = $(this).val();
+                
+                // Cambiar atributo en HTML
                 $('html').attr('data-bs-theme', mode);
                 
-                // Save to user preferences via AJAX
-                $.ajax({
-                    url: ui_panel_saas_vars.ajaxurl,
-                    type: 'POST',
-                    data: {
-                        action: 'ui_panel_saas_save_theme_mode',
-                        mode: mode,
-                        nonce: ui_panel_saas_vars.nonce
-                    }
-                });
+                // Guardar configuración
+                saveThemeSettings('ui_panel_saas_theme_mode', mode);
             });
             
-            // Color scheme change
+            // Color Scheme
             $('.color-option:not(.custom-color)').on('click', function() {
                 var color = $(this).data('color');
-                updatePrimaryColor(color);
+                
+                // Actualizar clases activas
                 $('.color-option').removeClass('border-3');
                 $(this).addClass('border-3');
+                
+                // Aplicar color primario
+                applyPrimaryColor(color);
+                
+                // Guardar configuración
+                saveThemeSettings('ui_panel_saas_primary_color', color);
             });
             
-            // Custom color picker
+            // Custom Color Picker
             $('.custom-color-picker').on('change', function() {
                 var color = $(this).val();
-                updatePrimaryColor(color);
-                $('.color-option:not(.custom-color)').removeClass('border-3');
+                
+                // Actualizar clases activas
+                $('.color-option').removeClass('border-3');
+                $(this).closest('.color-option').addClass('border-3');
+                
+                // Aplicar color primario
+                applyPrimaryColor(color);
+                
+                // Guardar configuración
+                saveThemeSettings('ui_panel_saas_primary_color', color);
             });
             
-            // Sidebar mode change
+            // Sidebar Mode
             $('input[name="sidebar-mode"]').on('change', function() {
                 var mode = $(this).val();
+                
+                // Cambiar atributo en HTML
                 $('html').attr('data-sidenav-size', mode);
                 
-                // Save to user preferences via AJAX
-                $.ajax({
-                    url: ui_panel_saas_vars.ajaxurl,
-                    type: 'POST',
-                    data: {
-                        action: 'ui_panel_saas_save_sidebar_mode',
-                        mode: mode,
-                        nonce: ui_panel_saas_vars.nonce
-                    }
-                });
+                // Guardar configuración
+                saveThemeSettings('ui_panel_saas_sidebar_mode', mode);
             });
             
-            // Layout width change
+            // Layout Width
             $('input[name="layout-width"]').on('change', function() {
                 var width = $(this).val();
+                
                 if (width === 'boxed') {
-                    $('.wrapper').removeClass('container-fluid').addClass('container');
+                    $('.content-page').addClass('container-md').removeClass('container-fluid');
                 } else {
-                    $('.wrapper').removeClass('container').addClass('container-fluid');
+                    $('.content-page').removeClass('container-md').addClass('container-fluid');
                 }
                 
-                // Save to user preferences via AJAX
-                $.ajax({
-                    url: ui_panel_saas_vars.ajaxurl,
-                    type: 'POST',
-                    data: {
-                        action: 'ui_panel_saas_save_layout_width',
-                        width: width,
-                        nonce: ui_panel_saas_vars.nonce
-                    }
-                });
+                // Guardar configuración
+                saveThemeSettings('ui_panel_saas_layout_width', width);
             });
             
-            // Footer type change
+            // Footer Type
             $('input[name="footer-type"]').on('change', function() {
                 var type = $(this).val();
                 
-                // Save to user preferences via AJAX
-                $.ajax({
-                    url: ui_panel_saas_vars.ajaxurl,
-                    type: 'POST',
-                    data: {
-                        action: 'ui_panel_saas_save_footer_type',
-                        type: type,
-                        nonce: ui_panel_saas_vars.nonce
-                    },
-                    success: function() {
-                        // Reload page to reflect footer change
-                        location.reload();
-                    }
-                });
+                // Guardar configuración
+                saveThemeSettings('ui_panel_saas_footer_type', type);
+                
+                // Recargar página para aplicar cambios
+                location.reload();
             });
             
-            // Reset theme settings
+            // Reset Settings
             $('#reset-theme-settings').on('click', function() {
+                // Confirmar antes de restablecer
                 if (confirm('<?php echo esc_js(__('¿Estás seguro de que deseas restablecer todos los ajustes del tema a sus valores predeterminados?', 'ui-panel-saas')); ?>')) {
-                    $.ajax({
-                        url: ui_panel_saas_vars.ajaxurl,
-                        type: 'POST',
-                        data: {
-                            action: 'ui_panel_saas_reset_theme_settings',
-                            nonce: ui_panel_saas_vars.nonce
-                        },
-                        success: function() {
-                            // Reload page to reflect reset settings
-                            location.reload();
-                        }
-                    });
+                    // Restablecer modo del tema
+                    $('html').attr('data-bs-theme', 'light');
+                    $('#theme-mode-light').prop('checked', true);
+                    
+                    // Restablecer color primario
+                    var defaultColor = '#4F46E5';
+                    applyPrimaryColor(defaultColor);
+                    $('.color-option').removeClass('border-3');
+                    $('.color-option[data-color="' + defaultColor + '"]').addClass('border-3');
+                    
+                    // Restablecer barra lateral
+                    $('html').attr('data-sidenav-size', 'default');
+                    $('#sidebar-option-default').prop('checked', true);
+                    
+                    // Restablecer ancho del layout
+                    $('.content-page').removeClass('container-md').addClass('container-fluid');
+                    $('#layout-width-fluid').prop('checked', true);
+                    
+                    // Restablecer footer
+                    $('#footer-type-standard').prop('checked', true);
+                    
+                    // Guardar configuraciones restablecidas
+                    saveThemeSettings('ui_panel_saas_theme_mode', 'light');
+                    saveThemeSettings('ui_panel_saas_primary_color', defaultColor);
+                    saveThemeSettings('ui_panel_saas_sidebar_mode', 'default');
+                    saveThemeSettings('ui_panel_saas_layout_width', 'fluid');
+                    saveThemeSettings('ui_panel_saas_footer_type', 'standard');
+                    
+                    // Mostrar mensaje de éxito
+                    alert('<?php echo esc_js(__('¡Configuración restablecida correctamente!', 'ui-panel-saas')); ?>');
                 }
             });
             
-            // Helper function to update primary color
-            function updatePrimaryColor(color) {
-                document.documentElement.style.setProperty('--ui-panel-saas-primary', color);
-                
-                // Save to user preferences via AJAX
+            // Back to top button
+            var backToTop = $('#back-to-top');
+            
+            $(window).scroll(function() {
+                if ($(this).scrollTop() > 300) {
+                    backToTop.addClass('active');
+                } else {
+                    backToTop.removeClass('active');
+                }
+            });
+            
+            backToTop.on('click', function(e) {
+                e.preventDefault();
+                $('html, body').animate({scrollTop: 0}, 800);
+                return false;
+            });
+            
+            // Helper function to save theme settings
+            function saveThemeSettings(setting, value) {
                 $.ajax({
-                    url: ui_panel_saas_vars.ajaxurl,
+                    url: '<?php echo esc_url(admin_url('admin-ajax.php')); ?>',
                     type: 'POST',
                     data: {
-                        action: 'ui_panel_saas_save_primary_color',
-                        color: color,
-                        nonce: ui_panel_saas_vars.nonce
+                        action: 'ui_panel_saas_save_theme_settings',
+                        setting: setting,
+                        value: value,
+                        nonce: '<?php echo wp_create_nonce('ui-panel-saas-theme-settings'); ?>'
+                    },
+                    success: function(response) {
+                        console.log('Configuración guardada:', setting, value);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error al guardar la configuración:', error);
                     }
                 });
+            }
+            
+            // Helper function to apply primary color
+            function applyPrimaryColor(color) {
+                // Convertir color a RGB
+                var rgb = hexToRgb(color);
+                var rgbString = rgb.r + ',' + rgb.g + ',' + rgb.b;
+                
+                // Aplicar variables CSS
+                document.documentElement.style.setProperty('--ui-panel-saas-primary', color);
+                document.documentElement.style.setProperty('--ui-panel-saas-primary-rgb', rgbString);
+            }
+            
+            // Helper function to convert hex to RGB
+            function hexToRgb(hex) {
+                var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+                hex = hex.replace(shorthandRegex, function(m, r, g, b) {
+                    return r + r + g + g + b + b;
+                });
+                
+                var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+                return result ? {
+                    r: parseInt(result[1], 16),
+                    g: parseInt(result[2], 16),
+                    b: parseInt(result[3], 16)
+                } : null;
             }
         });
     })(jQuery);
