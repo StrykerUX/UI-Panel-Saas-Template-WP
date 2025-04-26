@@ -1,405 +1,244 @@
 <?php
 /**
- * Funciones para el Customizer de WordPress
+ * UI Panel SAAS Theme Customizer
  *
  * @package UI_Panel_SAAS
- * @since 1.0.0
  */
-
-// Evitar acceso directo al archivo
-if (!defined('ABSPATH')) {
-    exit;
-}
 
 /**
- * Añadir configuraciones al Customizer de WordPress
+ * Add postMessage support for site title and description for the Theme Customizer.
  *
- * @param WP_Customize_Manager $wp_customize Objeto de personalización de WordPress
+ * @param WP_Customize_Manager $wp_customize Theme Customizer object.
  */
 function ui_panel_saas_customize_register($wp_customize) {
-    
-    /*
-     * Panel principal del tema
+    $wp_customize->get_setting('blogname')->transport         = 'postMessage';
+    $wp_customize->get_setting('blogdescription')->transport  = 'postMessage';
+    $wp_customize->get_setting('header_textcolor')->transport = 'postMessage';
+
+    // Verificar si hay soporte para custom background
+    if (isset($wp_customize->get_setting('background_color'))) {
+        $wp_customize->get_setting('background_color')->transport = 'postMessage';
+    }
+
+    /**
+     * Sección para los ajustes del sidebar
      */
-    $wp_customize->add_panel('ui_panel_saas_theme_panel', array(
-        'title'       => esc_html__('Opciones de UI Panel SAAS', 'ui-panel-saas'),
-        'description' => esc_html__('Personaliza la apariencia y funcionalidad de tu tema SAAS.', 'ui-panel-saas'),
-        'priority'    => 130,
+    $wp_customize->add_section('ui_panel_saas_sidebar_section', array(
+        'title'      => esc_html__('Sidebar', 'ui-panel-saas'),
+        'priority'   => 120,
     ));
-    
-    /*
-     * Sección: Configuración general
-     */
-    $wp_customize->add_section('ui_panel_saas_general_section', array(
-        'title'       => esc_html__('Configuración General', 'ui-panel-saas'),
-        'description' => esc_html__('Configuración básica del tema.', 'ui-panel-saas'),
-        'panel'       => 'ui_panel_saas_theme_panel',
-        'priority'    => 10,
-    ));
-    
-    // Logotipo pequeño (para barra lateral colapsada)
-    $wp_customize->add_setting('ui_panel_saas_logo_small', array(
-        'default'           => '',
-        'sanitize_callback' => 'absint',
-    ));
-    
-    $wp_customize->add_control(new WP_Customize_Media_Control($wp_customize, 'ui_panel_saas_logo_small', array(
-        'label'         => esc_html__('Logotipo pequeño', 'ui-panel-saas'),
-        'description'   => esc_html__('Usado en la barra lateral cuando está colapsada. Recomendado: 28x28px.', 'ui-panel-saas'),
-        'section'       => 'ui_panel_saas_general_section',
-        'settings'      => 'ui_panel_saas_logo_small',
-        'mime_type'     => 'image',
-        'priority'      => 20,
-    )));
-    
-    // Favicon del sitio
-    $wp_customize->add_setting('ui_panel_saas_favicon', array(
-        'default'           => '',
-        'sanitize_callback' => 'absint',
-    ));
-    
-    $wp_customize->add_control(new WP_Customize_Media_Control($wp_customize, 'ui_panel_saas_favicon', array(
-        'label'         => esc_html__('Favicon', 'ui-panel-saas'),
-        'description'   => esc_html__('Ícono que aparece en la pestaña del navegador. Recomendado: 32x32px.', 'ui-panel-saas'),
-        'section'       => 'ui_panel_saas_general_section',
-        'settings'      => 'ui_panel_saas_favicon',
-        'mime_type'     => 'image',
-        'priority'      => 30,
-    )));
-    
-    /*
-     * Sección: Colores y Tema
-     */
-    $wp_customize->add_section('ui_panel_saas_colors_section', array(
-        'title'       => esc_html__('Colores y Tema', 'ui-panel-saas'),
-        'description' => esc_html__('Personaliza los colores y el aspecto visual del tema.', 'ui-panel-saas'),
-        'panel'       => 'ui_panel_saas_theme_panel',
-        'priority'    => 20,
-    ));
-    
-    // Modo del tema (claro/oscuro)
-    $wp_customize->add_setting('ui_panel_saas_theme_mode', array(
-        'default'           => 'light',
-        'sanitize_callback' => 'ui_panel_saas_sanitize_select',
-        'transport'         => 'refresh',
-    ));
-    
-    $wp_customize->add_control('ui_panel_saas_theme_mode', array(
-        'label'       => esc_html__('Modo del tema', 'ui-panel-saas'),
-        'description' => esc_html__('Selecciona el modo de visualización predeterminado.', 'ui-panel-saas'),
-        'section'     => 'ui_panel_saas_colors_section',
-        'type'        => 'select',
-        'choices'     => array(
-            'light' => esc_html__('Modo claro', 'ui-panel-saas'),
-            'dark'  => esc_html__('Modo oscuro', 'ui-panel-saas'),
-        ),
-        'priority'    => 10,
-    ));
-    
-    // Color primario
-    $wp_customize->add_setting('ui_panel_saas_primary_color', array(
-        'default'           => '#4F46E5',
-        'sanitize_callback' => 'sanitize_hex_color',
-        'transport'         => 'refresh',
-    ));
-    
-    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'ui_panel_saas_primary_color', array(
-        'label'       => esc_html__('Color primario', 'ui-panel-saas'),
-        'description' => esc_html__('Color principal usado en botones y elementos destacados.', 'ui-panel-saas'),
-        'section'     => 'ui_panel_saas_colors_section',
-        'priority'    => 20,
-    )));
-    
-    // Color secundario
-    $wp_customize->add_setting('ui_panel_saas_secondary_color', array(
-        'default'           => '#8B5CF6',
-        'sanitize_callback' => 'sanitize_hex_color',
-        'transport'         => 'refresh',
-    ));
-    
-    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'ui_panel_saas_secondary_color', array(
-        'label'       => esc_html__('Color secundario', 'ui-panel-saas'),
-        'description' => esc_html__('Color complementario usado en elementos secundarios.', 'ui-panel-saas'),
-        'section'     => 'ui_panel_saas_colors_section',
-        'priority'    => 30,
-    )));
-    
-    // Color de éxito
-    $wp_customize->add_setting('ui_panel_saas_success_color', array(
-        'default'           => '#10B981',
-        'sanitize_callback' => 'sanitize_hex_color',
-        'transport'         => 'refresh',
-    ));
-    
-    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'ui_panel_saas_success_color', array(
-        'label'       => esc_html__('Color de éxito', 'ui-panel-saas'),
-        'description' => esc_html__('Color usado para indicar operaciones correctas o exitosas.', 'ui-panel-saas'),
-        'section'     => 'ui_panel_saas_colors_section',
-        'priority'    => 40,
-    )));
-    
-    // Color de peligro
-    $wp_customize->add_setting('ui_panel_saas_danger_color', array(
-        'default'           => '#EF4444',
-        'sanitize_callback' => 'sanitize_hex_color',
-        'transport'         => 'refresh',
-    ));
-    
-    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'ui_panel_saas_danger_color', array(
-        'label'       => esc_html__('Color de peligro', 'ui-panel-saas'),
-        'description' => esc_html__('Color usado para indicar errores o acciones peligrosas.', 'ui-panel-saas'),
-        'section'     => 'ui_panel_saas_colors_section',
-        'priority'    => 50,
-    )));
-    
-    /*
-     * Sección: Configuración de Layout
-     */
-    $wp_customize->add_section('ui_panel_saas_layout_section', array(
-        'title'       => esc_html__('Configuración de Layout', 'ui-panel-saas'),
-        'description' => esc_html__('Personaliza el diseño y estructura del tema.', 'ui-panel-saas'),
-        'panel'       => 'ui_panel_saas_theme_panel',
-        'priority'    => 30,
-    ));
-    
-    // Modo de barra lateral
+
+    // Modo del sidebar (default, condensed, hidden)
     $wp_customize->add_setting('ui_panel_saas_sidebar_mode', array(
         'default'           => 'default',
         'sanitize_callback' => 'ui_panel_saas_sanitize_select',
-        'transport'         => 'refresh',
+        'transport'         => 'postMessage',
     ));
-    
+
     $wp_customize->add_control('ui_panel_saas_sidebar_mode', array(
-        'label'       => esc_html__('Modo de barra lateral', 'ui-panel-saas'),
-        'description' => esc_html__('Selecciona el estilo y comportamiento de la barra lateral.', 'ui-panel-saas'),
-        'section'     => 'ui_panel_saas_layout_section',
-        'type'        => 'select',
-        'choices'     => array(
-            'default'    => esc_html__('Predeterminado', 'ui-panel-saas'),
-            'compact'    => esc_html__('Compacto', 'ui-panel-saas'),
-            'condensed'  => esc_html__('Condensado', 'ui-panel-saas'),
-            'hover'      => esc_html__('Expandir al pasar el ratón', 'ui-panel-saas'),
-            'icon-view'  => esc_html__('Solo iconos', 'ui-panel-saas'),
+        'label'    => esc_html__('Modo del sidebar', 'ui-panel-saas'),
+        'section'  => 'ui_panel_saas_sidebar_section',
+        'type'     => 'select',
+        'choices'  => array(
+            'default' => esc_html__('Por defecto', 'ui-panel-saas'),
+            'condensed' => esc_html__('Condensado', 'ui-panel-saas'),
+            'hidden' => esc_html__('Oculto', 'ui-panel-saas'),
         ),
-        'priority'    => 10,
     ));
-    
-    // Mostrar botón flotante de volver arriba
-    $wp_customize->add_setting('ui_panel_saas_show_back_to_top', array(
-        'default'           => true,
-        'sanitize_callback' => 'ui_panel_saas_sanitize_checkbox',
-        'transport'         => 'refresh',
-    ));
-    
-    $wp_customize->add_control('ui_panel_saas_show_back_to_top', array(
-        'label'       => esc_html__('Mostrar botón "Volver arriba"', 'ui-panel-saas'),
-        'description' => esc_html__('Muestra un botón flotante para volver al principio de la página.', 'ui-panel-saas'),
-        'section'     => 'ui_panel_saas_layout_section',
-        'type'        => 'checkbox',
-        'priority'    => 20,
-    ));
-    
-    // Mostrar personalizador de tema
-    $wp_customize->add_setting('ui_panel_saas_show_theme_customizer', array(
-        'default'           => true,
-        'sanitize_callback' => 'ui_panel_saas_sanitize_checkbox',
-        'transport'         => 'refresh',
-    ));
-    
-    $wp_customize->add_control('ui_panel_saas_show_theme_customizer', array(
-        'label'       => esc_html__('Mostrar personalizador de tema', 'ui-panel-saas'),
-        'description' => esc_html__('Muestra un panel lateral para personalizar el tema en tiempo real.', 'ui-panel-saas'),
-        'section'     => 'ui_panel_saas_layout_section',
-        'type'        => 'checkbox',
-        'priority'    => 30,
-    ));
-    
-    /*
-     * Sección: Configuración de pie de página
+
+    /**
+     * Sección para los ajustes del layout
      */
-    $wp_customize->add_section('ui_panel_saas_footer_section', array(
-        'title'       => esc_html__('Configuración de Pie de Página', 'ui-panel-saas'),
-        'description' => esc_html__('Personaliza el pie de página de tu sitio.', 'ui-panel-saas'),
-        'panel'       => 'ui_panel_saas_theme_panel',
-        'priority'    => 40,
+    $wp_customize->add_section('ui_panel_saas_layout_section', array(
+        'title'      => esc_html__('Layout', 'ui-panel-saas'),
+        'priority'   => 130,
     ));
-    
-    // Tipo de pie de página
-    $wp_customize->add_setting('ui_panel_saas_footer_type', array(
-        'default'           => 'standard',
+
+    // Modo del layout (fluid, boxed)
+    $wp_customize->add_setting('ui_panel_saas_layout_mode', array(
+        'default'           => 'fluid',
         'sanitize_callback' => 'ui_panel_saas_sanitize_select',
-        'transport'         => 'refresh',
+        'transport'         => 'postMessage',
     ));
-    
-    $wp_customize->add_control('ui_panel_saas_footer_type', array(
-        'label'       => esc_html__('Tipo de pie de página', 'ui-panel-saas'),
-        'description' => esc_html__('Selecciona el estilo del pie de página.', 'ui-panel-saas'),
-        'section'     => 'ui_panel_saas_footer_section',
-        'type'        => 'select',
-        'choices'     => array(
-            'standard' => esc_html__('Estándar', 'ui-panel-saas'),
-            'widgets'  => esc_html__('Widgets', 'ui-panel-saas'),
+
+    $wp_customize->add_control('ui_panel_saas_layout_mode', array(
+        'label'    => esc_html__('Modo del layout', 'ui-panel-saas'),
+        'section'  => 'ui_panel_saas_layout_section',
+        'type'     => 'select',
+        'choices'  => array(
+            'fluid' => esc_html__('Fluido', 'ui-panel-saas'),
+            'boxed' => esc_html__('Boxed', 'ui-panel-saas'),
         ),
-        'priority'    => 10,
     ));
-    
-    // Texto de copyright
-    $wp_customize->add_setting('ui_panel_saas_footer_copyright', array(
-        'default'           => sprintf(
-            esc_html__('%1$s &copy; %2$s %3$s. Todos los derechos reservados.', 'ui-panel-saas'),
-            date('Y'),
-            get_bloginfo('name'),
-            UI_PANEL_SAAS_VERSION
+
+    /**
+     * Sección para los ajustes de color
+     */
+    $wp_customize->add_section('ui_panel_saas_colors_section', array(
+        'title'      => esc_html__('Colores', 'ui-panel-saas'),
+        'priority'   => 140,
+    ));
+
+    // Modo del tema (light, dark)
+    $wp_customize->add_setting('ui_panel_saas_theme_mode', array(
+        'default'           => 'light',
+        'sanitize_callback' => 'ui_panel_saas_sanitize_select',
+        'transport'         => 'postMessage',
+    ));
+
+    $wp_customize->add_control('ui_panel_saas_theme_mode', array(
+        'label'    => esc_html__('Modo del tema', 'ui-panel-saas'),
+        'section'  => 'ui_panel_saas_colors_section',
+        'type'     => 'select',
+        'choices'  => array(
+            'light' => esc_html__('Claro', 'ui-panel-saas'),
+            'dark' => esc_html__('Oscuro', 'ui-panel-saas'),
         ),
-        'sanitize_callback' => 'wp_kses_post',
-        'transport'         => 'refresh',
     ));
-    
-    $wp_customize->add_control('ui_panel_saas_footer_copyright', array(
-        'label'       => esc_html__('Texto de copyright', 'ui-panel-saas'),
-        'description' => esc_html__('Texto que aparecerá en el pie de página (permite HTML).', 'ui-panel-saas'),
-        'section'     => 'ui_panel_saas_footer_section',
-        'type'        => 'textarea',
-        'priority'    => 20,
+
+    // Color del topbar (light, dark)
+    $wp_customize->add_setting('ui_panel_saas_topbar_color', array(
+        'default'           => 'light',
+        'sanitize_callback' => 'ui_panel_saas_sanitize_select',
+        'transport'         => 'postMessage',
     ));
-    
-    // Texto de créditos
-    $wp_customize->add_setting('ui_panel_saas_footer_credits', array(
-        'default'           => sprintf(
-            esc_html__('Desarrollado con %1$s por %2$s', 'ui-panel-saas'),
-            '<i class="ri-heart-fill text-danger"></i>',
-            '<a href="' . esc_url(home_url('/')) . '">' . get_bloginfo('name') . '</a>'
+
+    $wp_customize->add_control('ui_panel_saas_topbar_color', array(
+        'label'    => esc_html__('Color de la barra superior', 'ui-panel-saas'),
+        'section'  => 'ui_panel_saas_colors_section',
+        'type'     => 'select',
+        'choices'  => array(
+            'light' => esc_html__('Claro', 'ui-panel-saas'),
+            'dark' => esc_html__('Oscuro', 'ui-panel-saas'),
         ),
-        'sanitize_callback' => 'wp_kses_post',
-        'transport'         => 'refresh',
     ));
-    
-    $wp_customize->add_control('ui_panel_saas_footer_credits', array(
-        'label'       => esc_html__('Texto de créditos', 'ui-panel-saas'),
-        'description' => esc_html__('Texto de créditos que aparecerá en el pie de página (permite HTML).', 'ui-panel-saas'),
-        'section'     => 'ui_panel_saas_footer_section',
-        'type'        => 'textarea',
-        'priority'    => 30,
+
+    // Color del menú (light, dark)
+    $wp_customize->add_setting('ui_panel_saas_menu_color', array(
+        'default'           => 'dark',
+        'sanitize_callback' => 'ui_panel_saas_sanitize_select',
+        'transport'         => 'postMessage',
     ));
+
+    $wp_customize->add_control('ui_panel_saas_menu_color', array(
+        'label'    => esc_html__('Color del menú lateral', 'ui-panel-saas'),
+        'section'  => 'ui_panel_saas_colors_section',
+        'type'     => 'select',
+        'choices'  => array(
+            'light' => esc_html__('Claro', 'ui-panel-saas'),
+            'dark' => esc_html__('Oscuro', 'ui-panel-saas'),
+        ),
+    ));
+
+    // Notificación para personalización avanzada
+    $wp_customize->add_setting('ui_panel_saas_vortex_notification', array(
+        'default'           => '',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+
+    $wp_customize->add_control(new UI_Panel_SAAS_Customizer_Notification_Control($wp_customize, 'ui_panel_saas_vortex_notification', array(
+        'label'       => esc_html__('Personalización avanzada', 'ui-panel-saas'),
+        'description' => esc_html__('Para una personalización más avanzada de colores, tipografía y componentes, utilice el plugin Vortex UI Panel en el menú de administración.', 'ui-panel-saas'),
+        'section'     => 'ui_panel_saas_colors_section',
+        'priority'    => 1,
+    )));
+
+    /**
+     * Notificaciones para las opciones adicionales disponibles a través del plugin Vortex UI Panel
+     */
+    if (!class_exists('UI_Panel_SAAS_Customizer_Notification_Control')) {
+        /**
+         * Clase para crear un control personalizado para mostrar notificaciones
+         */
+        class UI_Panel_SAAS_Customizer_Notification_Control extends WP_Customize_Control {
+            public $type = 'ui_panel_saas_notification';
+            
+            public function render_content() {
+                ?>
+                <div class="ui-panel-saas-customizer-notification">
+                    <?php if (!empty($this->label)) : ?>
+                        <span class="customize-control-title"><?php echo esc_html($this->label); ?></span>
+                    <?php endif; ?>
+                    
+                    <?php if (!empty($this->description)) : ?>
+                        <div class="description customize-control-description">
+                            <?php echo wp_kses_post($this->description); ?>
+                            
+                            <?php if (class_exists('Vortex_UI_Panel')) : ?>
+                                <p><a href="<?php echo esc_url(admin_url('admin.php?page=vortex-ui-panel-theme-styles')); ?>" class="button button-primary" target="_blank"><?php echo esc_html__('Abrir Personalizador Avanzado', 'ui-panel-saas'); ?></a></p>
+                            <?php else : ?>
+                                <p><?php echo esc_html__('El plugin Vortex UI Panel no está instalado o activado.', 'ui-panel-saas'); ?></p>
+                            <?php endif; ?>
+                        </div>
+                    <?php endif; ?>
+                </div>
+                <?php
+            }
+        }
+    }
 }
 add_action('customize_register', 'ui_panel_saas_customize_register');
 
 /**
- * Sanitizar un valor de selección
+ * Render the site title for the selective refresh partial.
  *
- * @param string $input Valor a sanitizar
- * @param WP_Customize_Setting $setting Objeto de configuración
- * @return string Valor sanitizado
+ * @return void
+ */
+function ui_panel_saas_customize_partial_blogname() {
+    bloginfo('name');
+}
+
+/**
+ * Render the site tagline for the selective refresh partial.
+ *
+ * @return void
+ */
+function ui_panel_saas_customize_partial_blogdescription() {
+    bloginfo('description');
+}
+
+/**
+ * Binds JS handlers to make Theme Customizer preview reload changes asynchronously.
+ */
+function ui_panel_saas_customize_preview_js() {
+    wp_enqueue_script('ui-panel-saas-customizer', get_template_directory_uri() . '/assets/js/customizer.js', array('customize-preview'), UI_PANEL_SAAS_VERSION, true);
+}
+add_action('customize_preview_init', 'ui_panel_saas_customize_preview_js');
+
+/**
+ * Sanitize select option
  */
 function ui_panel_saas_sanitize_select($input, $setting) {
-    // Obtener las opciones válidas
+    // Ensure input is a slug
+    $input = sanitize_key($input);
+    
+    // Get list of choices from the control associated with the setting
     $choices = $setting->manager->get_control($setting->id)->choices;
     
-    // Devolver el valor si existe en las opciones, o el valor predeterminado
+    // If the input is a valid key, return it; otherwise, return the default
     return (array_key_exists($input, $choices) ? $input : $setting->default);
 }
 
 /**
- * Sanitizar un valor de casilla de verificación
- *
- * @param bool $checked Si está marcado o no
- * @return bool Valor sanitizado
+ * Integración con el plugin Vortex UI Panel para estilos personalizados
+ * 
+ * Esta función carga los estilos personalizados del tema desde el plugin Vortex UI Panel
  */
-function ui_panel_saas_sanitize_checkbox($checked) {
-    return ((isset($checked) && true == $checked) ? true : false);
+function ui_panel_saas_load_vortex_custom_styles() {
+    // Comprobar si el plugin Vortex UI Panel está activo
+    if (class_exists('Vortex_UI_Panel')) {
+        // Obtener la instancia del personalizador de estilos
+        $vortex_theme_customizer = Vortex_UI_Panel::get_instance()->get_theme_customizer();
+        
+        if ($vortex_theme_customizer) {
+            // Generar CSS personalizado
+            $custom_css = $vortex_theme_customizer->generate_custom_css();
+            
+            // Inyectar el CSS en el frontend
+            if (!empty($custom_css)) {
+                wp_add_inline_style('ui-panel-saas-main', $custom_css);
+            }
+        }
+    }
 }
-
-/**
- * Generar CSS personalizado basado en las opciones del tema
- */
-function ui_panel_saas_customizer_css() {
-    // Obtener colores personalizados
-    $primary_color   = get_theme_mod('ui_panel_saas_primary_color', '#4F46E5');
-    $secondary_color = get_theme_mod('ui_panel_saas_secondary_color', '#8B5CF6');
-    $success_color   = get_theme_mod('ui_panel_saas_success_color', '#10B981');
-    $danger_color    = get_theme_mod('ui_panel_saas_danger_color', '#EF4444');
-    
-    // Generar CSS personalizado
-    $custom_css = "
-        :root {
-            --ui-panel-saas-primary: {$primary_color};
-            --ui-panel-saas-secondary: {$secondary_color};
-            --ui-panel-saas-success: {$success_color};
-            --ui-panel-saas-danger: {$danger_color};
-        }
-        
-        /* Estilos primarios */
-        .btn-primary, 
-        .bg-primary,
-        .badge-primary,
-        .progress-bar {
-            background-color: var(--ui-panel-saas-primary) !important;
-            border-color: var(--ui-panel-saas-primary) !important;
-        }
-        
-        .text-primary,
-        .side-nav > li.active > a {
-            color: var(--ui-panel-saas-primary) !important;
-        }
-        
-        /* Estilos secundarios */
-        .btn-secondary, 
-        .bg-secondary,
-        .badge-secondary {
-            background-color: var(--ui-panel-saas-secondary) !important;
-            border-color: var(--ui-panel-saas-secondary) !important;
-        }
-        
-        .text-secondary {
-            color: var(--ui-panel-saas-secondary) !important;
-        }
-        
-        /* Estilos de éxito */
-        .btn-success, 
-        .bg-success,
-        .badge-success {
-            background-color: var(--ui-panel-saas-success) !important;
-            border-color: var(--ui-panel-saas-success) !important;
-        }
-        
-        .text-success {
-            color: var(--ui-panel-saas-success) !important;
-        }
-        
-        /* Estilos de peligro */
-        .btn-danger, 
-        .bg-danger,
-        .badge-danger {
-            background-color: var(--ui-panel-saas-danger) !important;
-            border-color: var(--ui-panel-saas-danger) !important;
-        }
-        
-        .text-danger {
-            color: var(--ui-panel-saas-danger) !important;
-        }
-    ";
-    
-    // Añadir CSS personalizado
-    wp_add_inline_style('ui-panel-saas-main', $custom_css);
-}
-add_action('wp_enqueue_scripts', 'ui_panel_saas_customizer_css', 20);
-
-/**
- * Aplicar las opciones del tema en la carga de la página
- */
-function ui_panel_saas_customizer_js() {
-    // Verificar si mostrar el botón de volver arriba
-    $show_back_to_top = get_theme_mod('ui_panel_saas_show_back_to_top', true);
-    
-    // JavaScript personalizado
-    $custom_js = "
-        // Configuración personalizada del tema
-        var uiPanelSaasConfig = {
-            showBackToTop: " . ($show_back_to_top ? 'true' : 'false') . "
-        };
-    ";
-    
-    // Añadir JavaScript personalizado
-    wp_add_inline_script('ui-panel-saas-main', $custom_js, 'before');
-}
-add_action('wp_enqueue_scripts', 'ui_panel_saas_customizer_js', 20);
+add_action('wp_enqueue_scripts', 'ui_panel_saas_load_vortex_custom_styles', 999);
