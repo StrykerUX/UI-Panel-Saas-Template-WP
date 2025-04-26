@@ -245,6 +245,9 @@ function ui_panel_saas_scripts() {
     // Estilos principales del tema
     wp_enqueue_style('ui-panel-saas-main', UI_PANEL_SAAS_ASSETS_URI . '/css/main.css', array('bootstrap'), UI_PANEL_SAAS_VERSION);
     
+    // Estilos de botones 3D
+    wp_enqueue_style('ui-panel-saas-buttons-3d', UI_PANEL_SAAS_ASSETS_URI . '/css/buttons-3d.css', array('ui-panel-saas-main'), UI_PANEL_SAAS_VERSION);
+    
     // Estilos específicos para RTL si es necesario
     if (is_rtl()) {
         wp_enqueue_style('ui-panel-saas-rtl', UI_PANEL_SAAS_ASSETS_URI . '/css/rtl.css', array('ui-panel-saas-main'), UI_PANEL_SAAS_VERSION);
@@ -311,6 +314,15 @@ function ui_panel_saas_add_html_attributes($output) {
     return str_replace('<html', '<html data-bs-theme="' . esc_attr($theme_mode) . '" data-sidenav-size="' . esc_attr($sidebar_mode) . '" data-layout-mode="' . esc_attr($layout_mode) . '" data-topbar-color="' . esc_attr($topbar_color) . '" data-menu-color="' . esc_attr($menu_color) . '"', $output);
 }
 add_filter('language_attributes', 'ui_panel_saas_add_html_attributes');
+
+/**
+ * Agregar la clase 'apply-3d-effect' al body para activar los efectos 3D en todo el tema
+ */
+function ui_panel_saas_add_body_classes($classes) {
+    $classes[] = 'apply-3d-effect';
+    return $classes;
+}
+add_filter('body_class', 'ui_panel_saas_add_body_classes');
 
 /**
  * Función para determinar si se está usando un layout oscuro
@@ -449,6 +461,9 @@ function ui_panel_saas_register_shortcodes() {
     // Shortcode para mostrar botones estilizados
     add_shortcode('ui_panel_button', 'ui_panel_saas_button_shortcode');
     
+    // Shortcode para botón 3D
+    add_shortcode('ui_panel_button_3d', 'ui_panel_saas_button_3d_shortcode');
+    
     // Shortcodes específicos para la plantilla Canvas
     add_shortcode('flex_row', 'ui_panel_saas_flex_row_shortcode');
     add_shortcode('flex_column', 'ui_panel_saas_flex_column_shortcode');
@@ -563,6 +578,44 @@ function ui_panel_saas_button_shortcode($atts, $content = null) {
         <?php endif; ?>
         <?php echo do_shortcode($content); ?>
     </a>
+    <?php
+    return ob_get_clean();
+}
+
+/**
+ * Shortcode para botones 3D
+ */
+function ui_panel_saas_button_3d_shortcode($atts, $content = null) {
+    $atts = shortcode_atts(array(
+        'url' => '#',
+        'color' => 'primary',
+        'size' => '',
+        'icon' => '',
+        'class' => '',
+        'target' => '_self',
+    ), $atts);
+    
+    $wrapper_class = 'btn-3d-wrapper ' . esc_attr($atts['color']);
+    
+    if (!empty($atts['size'])) {
+        $wrapper_class .= ' btn-' . esc_attr($atts['size']);
+    }
+    
+    if (!empty($atts['class'])) {
+        $wrapper_class .= ' ' . esc_attr($atts['class']);
+    }
+    
+    ob_start();
+    ?>
+    <div class="<?php echo esc_attr($wrapper_class); ?>">
+        <div class="btn-3d-back"></div>
+        <a href="<?php echo esc_url($atts['url']); ?>" class="btn-3d" target="<?php echo esc_attr($atts['target']); ?>">
+            <span class="btn-3d-text"><?php echo do_shortcode($content); ?></span>
+            <?php if (!empty($atts['icon'])) : ?>
+                <i class="ti <?php echo esc_attr($atts['icon']); ?> btn-3d-icon"></i>
+            <?php endif; ?>
+        </a>
+    </div>
     <?php
     return ob_get_clean();
 }
