@@ -11,20 +11,136 @@
     --border-radius: 4px;
     
     /* Colores para botones */
+    --front-bg-color: #2c2c2c;
     --front-text-color: white;
     --front-border-color: transparent;
     --back-bg-color: transparent;
-    
-    /* Colores de bordes para botones de diferentes estilos */
-    --primary-back-border-color: #3730a3;
-    --secondary-back-border-color: #6D28D9;
-    --success-back-border-color: #047857;
-    --info-back-border-color: #1D4ED8;
-    --warning-back-border-color: #B45309;
-    --danger-back-border-color: #B91C1C;
+    --back-border-color: #000000;
+    --font-size: 14px;
+    --font-weight: 500;
 }
 
-/* Contenedor básico del botón 3D */
+/* Contenedor principal */
+.btn-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+/* Contenedor trasero */
+.btn-back {
+    position: absolute;
+    top: var(--offset);
+    left: var(--offset);
+    width: 100%;
+    height: 100%;
+    background-color: var(--back-bg-color);
+    border: 1px solid var(--back-border-color);
+    border-radius: var(--border-radius);
+    z-index: 1;
+    box-sizing: border-box;
+}
+
+/* Botón frontal */
+.btn {
+    display: flex;
+    align-items: center;
+    padding: 8px 16px;
+    font-size: var(--font-size);
+    font-weight: var(--font-weight);
+    color: var(--front-text-color);
+    background-color: var(--front-bg-color);
+    border: 1px solid var(--front-border-color);
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    position: relative;
+    z-index: 2;
+    text-decoration: none;
+    transition: transform 0.1s ease-out;
+}
+
+/* Texto e icono */
+.btn-text {
+    margin-right: auto;
+}
+
+.btn-icon {
+    color: var(--front-text-color);
+    margin-left: 4px;
+}
+
+/* Efectos hover y active */
+.btn-wrapper:hover .btn {
+    transform: translate(var(--hover-offset), var(--hover-offset));
+}
+
+.btn-wrapper:active .btn {
+    transform: translate(var(--offset), var(--offset));
+}
+
+/* Versiones específicas para diferentes colores */
+.primary .btn {
+    background-color: var(--bs-primary, #4F46E5);
+}
+
+.primary .btn-back {
+    border-color: #3730a3;
+}
+
+.secondary .btn {
+    background-color: var(--bs-secondary, #8B5CF6);
+}
+
+.secondary .btn-back {
+    border-color: #6D28D9;
+}
+
+.success .btn {
+    background-color: var(--bs-success, #10B981);
+}
+
+.success .btn-back {
+    border-color: #047857;
+}
+
+.info .btn {
+    background-color: var(--bs-info, #3B82F6);
+}
+
+.info .btn-back {
+    border-color: #1D4ED8;
+}
+
+.warning .btn {
+    background-color: var(--bs-warning, #F59E0B);
+}
+
+.warning .btn-back {
+    border-color: #B45309;
+}
+
+.danger .btn {
+    background-color: var(--bs-danger, #EF4444);
+}
+
+.danger .btn-back {
+    border-color: #B91C1C;
+}
+
+/* Tamaños de botones */
+.btn-sm .btn {
+    padding: 5px 10px;
+    font-size: 12px;
+}
+
+.btn-lg .btn {
+    padding: 12px 20px;
+    font-size: 16px;
+}
+
+/* ===== Aplicar a botones estándar de Bootstrap ===== */
+/* Estas clases son para la compatibilidad con Bootstrap y WordPress */
+
+/* Botones 3D para uso con el shortcode y clases manuales */
 .btn-3d-wrapper {
     position: relative;
     display: inline-block;
@@ -32,7 +148,6 @@
     margin-bottom: var(--offset);
 }
 
-/* Capa trasera del botón 3D */
 .btn-3d-back {
     position: absolute;
     top: var(--offset);
@@ -40,22 +155,21 @@
     width: 100%;
     height: 100%;
     background-color: var(--back-bg-color);
-    border: 1px solid var(--primary-back-border-color);
+    border: 1px solid var(--back-border-color);
     border-radius: var(--border-radius);
     z-index: 1;
     box-sizing: border-box;
 }
 
-/* Botón frontal con efecto 3D */
 .btn-3d {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     padding: 8px 16px;
-    font-size: 14px;
-    font-weight: 500;
+    font-size: var(--font-size);
+    font-weight: var(--font-weight);
     color: var(--front-text-color);
-    background-color: var(--bs-primary);
+    background-color: var(--front-bg-color);
     border: 1px solid var(--front-border-color);
     border-radius: var(--border-radius);
     cursor: pointer;
@@ -74,7 +188,6 @@
     margin-left: 8px;
 }
 
-/* Interacciones */
 .btn-3d-wrapper:hover .btn-3d {
     transform: translate(var(--hover-offset), var(--hover-offset));
 }
@@ -83,74 +196,14 @@
     transform: translate(var(--offset), var(--offset));
 }
 
-/* Versiones de color para los botones 3D - Usa colores del tema */
-.btn-3d-wrapper.primary .btn-3d {
-    background-color: var(--bs-primary);
-}
-
-.btn-3d-wrapper.primary .btn-3d-back {
-    border-color: var(--primary-back-border-color);
-}
-
-.btn-3d-wrapper.secondary .btn-3d {
-    background-color: var(--bs-secondary);
-}
-
-.btn-3d-wrapper.secondary .btn-3d-back {
-    border-color: var(--secondary-back-border-color);
-}
-
-.btn-3d-wrapper.success .btn-3d {
-    background-color: var(--bs-success);
-}
-
-.btn-3d-wrapper.success .btn-3d-back {
-    border-color: var(--success-back-border-color);
-}
-
-.btn-3d-wrapper.info .btn-3d {
-    background-color: var(--bs-info);
-}
-
-.btn-3d-wrapper.info .btn-3d-back {
-    border-color: var(--info-back-border-color);
-}
-
-.btn-3d-wrapper.warning .btn-3d {
-    background-color: var(--bs-warning);
-}
-
-.btn-3d-wrapper.warning .btn-3d-back {
-    border-color: var(--warning-back-border-color);
-}
-
-.btn-3d-wrapper.danger .btn-3d {
-    background-color: var(--bs-danger);
-}
-
-.btn-3d-wrapper.danger .btn-3d-back {
-    border-color: var(--danger-back-border-color);
-}
-
-/* Tamaños de botones */
-.btn-3d-wrapper.btn-sm .btn-3d {
-    padding: 5px 10px;
-    font-size: 12px;
-}
-
-.btn-3d-wrapper.btn-lg .btn-3d {
-    padding: 12px 20px;
-    font-size: 16px;
-}
-
 /* Aplicar a botones estándar de Bootstrap */
-.apply-3d-effect .btn {
+.apply-3d-effect .btn.btn-bootstrap {
     margin-bottom: var(--offset);
     position: relative;
     transition: transform 0.1s ease-out;
 }
 
-.apply-3d-effect .btn::before {
+.apply-3d-effect .btn.btn-bootstrap::before {
     content: "";
     position: absolute;
     top: var(--offset);
@@ -158,38 +211,17 @@
     width: 100%;
     height: 100%;
     background-color: var(--back-bg-color);
-    border: 1px solid var(--primary-back-border-color);
+    border: 1px solid var(--back-border-color);
     border-radius: var(--border-radius);
     z-index: -1;
     box-sizing: border-box;
 }
 
-/* Modificadores para los diferentes tipos de botones */
-.apply-3d-effect .btn-secondary::before {
-    border-color: var(--secondary-back-border-color);
-}
-
-.apply-3d-effect .btn-success::before {
-    border-color: var(--success-back-border-color);
-}
-
-.apply-3d-effect .btn-info::before {
-    border-color: var(--info-back-border-color);
-}
-
-.apply-3d-effect .btn-warning::before {
-    border-color: var(--warning-back-border-color);
-}
-
-.apply-3d-effect .btn-danger::before {
-    border-color: var(--danger-back-border-color);
-}
-
-.apply-3d-effect .btn:hover {
+.apply-3d-effect .btn.btn-bootstrap:hover {
     transform: translate(var(--hover-offset), var(--hover-offset));
 }
 
-.apply-3d-effect .btn:active {
+.apply-3d-effect .btn.btn-bootstrap:active {
     transform: translate(var(--offset), var(--offset));
 }
 
@@ -214,7 +246,7 @@
     width: 100%;
     height: 100%;
     background-color: var(--back-bg-color);
-    border: 1px solid var(--primary-back-border-color);
+    border: 1px solid var(--back-border-color);
     border-radius: var(--border-radius);
     z-index: -1;
     box-sizing: border-box;
@@ -248,7 +280,7 @@
     width: calc(100% - 20px);
     height: calc(100% - 10px);
     background-color: var(--back-bg-color);
-    border: 1px solid rgba(var(--bs-primary-rgb), 0.4);
+    border: 1px solid rgba(var(--bs-primary-rgb, 79, 70, 229), 0.4);
     border-radius: var(--border-radius);
     z-index: -1;
     opacity: 0;
