@@ -1,0 +1,286 @@
+/**
+ * Botones 3D para UI Panel SAAS Theme
+ * Implementación global del efecto 3D para todos los botones
+ */
+
+/* Variables para botones 3D */
+:root {
+    /* Variables para botones 3D */
+    --front-bg-color: var(--bs-primary);
+    --front-text-color: white;
+    --front-border-color: transparent;
+    --back-bg-color: transparent;
+    --back-border-color: #3730a3;
+    --border-radius: 4px;
+    --offset: 4px;
+    --hover-offset: 3px;
+    --secondary-front-bg-color: var(--bs-secondary);
+    --secondary-back-border-color: #6D28D9;
+    
+    /* Variables para botones de diferentes colores */
+    --success-back-border-color: #047857;
+    --info-back-border-color: #1D4ED8;
+    --warning-back-border-color: #B45309;
+    --danger-back-border-color: #B91C1C;
+}
+
+/* Contenedor del botón 3D */
+.btn-3d-wrapper {
+    position: relative;
+    display: inline-block;
+    margin-right: 10px;
+    margin-bottom: var(--offset);
+}
+
+/* Capa trasera del botón 3D */
+.btn-3d-back {
+    position: absolute;
+    top: var(--offset);
+    left: var(--offset);
+    width: 100%;
+    height: 100%;
+    background-color: var(--back-bg-color);
+    border: 1px solid var(--back-border-color);
+    border-radius: var(--border-radius);
+    z-index: 1;
+    box-sizing: border-box;
+}
+
+/* Botón frontal con efecto 3D */
+.btn-3d {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--front-text-color);
+    background-color: var(--front-bg-color);
+    border: 1px solid var(--front-border-color);
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    position: relative;
+    z-index: 2;
+    text-decoration: none;
+    transition: transform 0.1s ease-out;
+}
+
+.btn-3d-text {
+    margin-right: auto;
+}
+
+.btn-3d-icon {
+    color: var(--front-text-color);
+    margin-left: 8px;
+}
+
+/* Interacciones */
+.btn-3d-wrapper:hover .btn-3d {
+    transform: translate(var(--hover-offset), var(--hover-offset));
+}
+
+.btn-3d-wrapper:active .btn-3d {
+    transform: translate(var(--offset), var(--offset));
+}
+
+/* Versiones de color para los botones 3D */
+.btn-3d-wrapper.primary .btn-3d {
+    background-color: var(--front-bg-color);
+}
+
+.btn-3d-wrapper.primary .btn-3d-back {
+    border-color: var(--back-border-color);
+}
+
+.btn-3d-wrapper.secondary .btn-3d {
+    background-color: var(--secondary-front-bg-color);
+}
+
+.btn-3d-wrapper.secondary .btn-3d-back {
+    border-color: var(--secondary-back-border-color);
+}
+
+.btn-3d-wrapper.success .btn-3d {
+    background-color: var(--bs-success);
+}
+
+.btn-3d-wrapper.success .btn-3d-back {
+    border-color: var(--success-back-border-color);
+}
+
+.btn-3d-wrapper.info .btn-3d {
+    background-color: var(--bs-info);
+}
+
+.btn-3d-wrapper.info .btn-3d-back {
+    border-color: var(--info-back-border-color);
+}
+
+.btn-3d-wrapper.warning .btn-3d {
+    background-color: var(--bs-warning);
+}
+
+.btn-3d-wrapper.warning .btn-3d-back {
+    border-color: var(--warning-back-border-color);
+}
+
+.btn-3d-wrapper.danger .btn-3d {
+    background-color: var(--bs-danger);
+}
+
+.btn-3d-wrapper.danger .btn-3d-back {
+    border-color: var(--danger-back-border-color);
+}
+
+/* Tamaños de botones */
+.btn-3d-wrapper.btn-sm .btn-3d {
+    padding: 5px 10px;
+    font-size: 12px;
+}
+
+.btn-3d-wrapper.btn-lg .btn-3d {
+    padding: 12px 20px;
+    font-size: 16px;
+}
+
+/* Botones de WordPress y Bootstrap */
+/* Sobreescribiendo clases estándar para aplicar el efecto 3D */
+
+/* Clase para convertir botones estándar a botones 3D */
+.btn-3d-convert {
+    padding: 0 !important;
+    background: none !important;
+    border: none !important;
+    margin-bottom: var(--offset) !important;
+    position: relative !important;
+}
+
+.btn-3d-convert::before {
+    content: "";
+    position: absolute;
+    top: var(--offset);
+    left: var(--offset);
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+    border: 1px solid var(--back-border-color);
+    border-radius: var(--border-radius);
+    z-index: 1;
+    box-sizing: border-box;
+}
+
+.btn-3d-convert:hover {
+    transform: translate(var(--hover-offset), var(--hover-offset));
+}
+
+.btn-3d-convert:active {
+    transform: translate(var(--offset), var(--offset));
+}
+
+/* Aplicar a botones estándar de Bootstrap */
+.apply-3d-effect .btn {
+    margin-bottom: var(--offset);
+    position: relative;
+    transition: transform 0.1s ease-out;
+}
+
+.apply-3d-effect .btn::before {
+    content: "";
+    position: absolute;
+    top: var(--offset);
+    left: var(--offset);
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+    border: 1px solid var(--back-border-color);
+    border-radius: var(--border-radius);
+    z-index: -1;
+    box-sizing: border-box;
+}
+
+.apply-3d-effect .btn:hover {
+    transform: translate(var(--hover-offset), var(--hover-offset));
+}
+
+.apply-3d-effect .btn:active {
+    transform: translate(var(--offset), var(--offset));
+}
+
+/* Aplicar a botones de WordPress */
+.apply-3d-effect .wp-block-button__link,
+.apply-3d-effect .button,
+.apply-3d-effect .button-primary,
+.apply-3d-effect .button-secondary {
+    margin-bottom: var(--offset);
+    position: relative;
+    transition: transform 0.1s ease-out;
+}
+
+.apply-3d-effect .wp-block-button__link::before,
+.apply-3d-effect .button::before,
+.apply-3d-effect .button-primary::before,
+.apply-3d-effect .button-secondary::before {
+    content: "";
+    position: absolute;
+    top: var(--offset);
+    left: var(--offset);
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+    border: 1px solid var(--back-border-color);
+    border-radius: var(--border-radius);
+    z-index: -1;
+    box-sizing: border-box;
+}
+
+.apply-3d-effect .wp-block-button__link:hover,
+.apply-3d-effect .button:hover,
+.apply-3d-effect .button-primary:hover,
+.apply-3d-effect .button-secondary:hover {
+    transform: translate(var(--hover-offset), var(--hover-offset));
+}
+
+.apply-3d-effect .wp-block-button__link:active,
+.apply-3d-effect .button:active,
+.apply-3d-effect .button-primary:active,
+.apply-3d-effect .button-secondary:active {
+    transform: translate(var(--offset), var(--offset));
+}
+
+/* Ajuste para los enlaces del menú lateral */
+.side-nav-link {
+    position: relative;
+    transition: transform 0.1s ease-out, color 0.3s, background-color 0.3s;
+}
+
+.apply-3d-effect .side-nav-link::before {
+    content: "";
+    position: absolute;
+    top: var(--offset);
+    left: var(--offset);
+    width: calc(100% - 20px);
+    height: calc(100% - 10px);
+    background-color: transparent;
+    border: 1px solid rgba(var(--bs-primary-rgb), 0.4);
+    border-radius: var(--border-radius);
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    box-sizing: border-box;
+}
+
+.apply-3d-effect .side-nav-link:hover::before {
+    opacity: 1;
+}
+
+.apply-3d-effect .side-nav-link:hover {
+    transform: translate(var(--hover-offset), var(--hover-offset));
+}
+
+.apply-3d-effect .side-nav-link:active {
+    transform: translate(var(--offset), var(--offset));
+}
+
+.apply-3d-effect .side-nav-link.active::before {
+    opacity: 1;
+}
