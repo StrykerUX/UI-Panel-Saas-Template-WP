@@ -6,17 +6,25 @@
 /* Variables simplificadas para botones 3D */
 :root {
     /* Valores globales para todos los botones 3D */
-    --border-radius: 4px;
     --offset: 4px;
     --hover-offset: 3px;
+    --border-radius: 4px;
     
-    /* Mantenemos las referencias a los colores del tema principal */
+    /* Colores para botones */
     --front-text-color: white;
     --front-border-color: transparent;
     --back-bg-color: transparent;
+    
+    /* Colores de bordes para botones de diferentes estilos */
+    --primary-back-border-color: #3730a3;
+    --secondary-back-border-color: #6D28D9;
+    --success-back-border-color: #047857;
+    --info-back-border-color: #1D4ED8;
+    --warning-back-border-color: #B45309;
+    --danger-back-border-color: #B91C1C;
 }
 
-/* Contenedor del botón 3D */
+/* Contenedor básico del botón 3D */
 .btn-3d-wrapper {
     position: relative;
     display: inline-block;
@@ -32,7 +40,7 @@
     width: 100%;
     height: 100%;
     background-color: var(--back-bg-color);
-    border: 1px solid #3730a3; /* Color por defecto para el borde trasero */
+    border: 1px solid var(--primary-back-border-color);
     border-radius: var(--border-radius);
     z-index: 1;
     box-sizing: border-box;
@@ -47,7 +55,7 @@
     font-size: 14px;
     font-weight: 500;
     color: var(--front-text-color);
-    background-color: var(--bs-primary); /* Usa el color primario del tema */
+    background-color: var(--bs-primary);
     border: 1px solid var(--front-border-color);
     border-radius: var(--border-radius);
     cursor: pointer;
@@ -81,7 +89,7 @@
 }
 
 .btn-3d-wrapper.primary .btn-3d-back {
-    border-color: #3730a3;
+    border-color: var(--primary-back-border-color);
 }
 
 .btn-3d-wrapper.secondary .btn-3d {
@@ -89,7 +97,7 @@
 }
 
 .btn-3d-wrapper.secondary .btn-3d-back {
-    border-color: #6D28D9;
+    border-color: var(--secondary-back-border-color);
 }
 
 .btn-3d-wrapper.success .btn-3d {
@@ -97,7 +105,7 @@
 }
 
 .btn-3d-wrapper.success .btn-3d-back {
-    border-color: #047857;
+    border-color: var(--success-back-border-color);
 }
 
 .btn-3d-wrapper.info .btn-3d {
@@ -105,7 +113,7 @@
 }
 
 .btn-3d-wrapper.info .btn-3d-back {
-    border-color: #1D4ED8;
+    border-color: var(--info-back-border-color);
 }
 
 .btn-3d-wrapper.warning .btn-3d {
@@ -113,7 +121,7 @@
 }
 
 .btn-3d-wrapper.warning .btn-3d-back {
-    border-color: #B45309;
+    border-color: var(--warning-back-border-color);
 }
 
 .btn-3d-wrapper.danger .btn-3d {
@@ -121,7 +129,7 @@
 }
 
 .btn-3d-wrapper.danger .btn-3d-back {
-    border-color: #B91C1C;
+    border-color: var(--danger-back-border-color);
 }
 
 /* Tamaños de botones */
@@ -149,31 +157,32 @@
     left: var(--offset);
     width: 100%;
     height: 100%;
-    background-color: transparent;
-    border: 1px solid #3730a3; /* Color por defecto para botones estándar */
+    background-color: var(--back-bg-color);
+    border: 1px solid var(--primary-back-border-color);
     border-radius: var(--border-radius);
     z-index: -1;
     box-sizing: border-box;
 }
 
+/* Modificadores para los diferentes tipos de botones */
 .apply-3d-effect .btn-secondary::before {
-    border-color: #6D28D9;
+    border-color: var(--secondary-back-border-color);
 }
 
 .apply-3d-effect .btn-success::before {
-    border-color: #047857;
+    border-color: var(--success-back-border-color);
 }
 
 .apply-3d-effect .btn-info::before {
-    border-color: #1D4ED8;
+    border-color: var(--info-back-border-color);
 }
 
 .apply-3d-effect .btn-warning::before {
-    border-color: #B45309;
+    border-color: var(--warning-back-border-color);
 }
 
 .apply-3d-effect .btn-danger::before {
-    border-color: #B91C1C;
+    border-color: var(--danger-back-border-color);
 }
 
 .apply-3d-effect .btn:hover {
@@ -204,8 +213,8 @@
     left: var(--offset);
     width: 100%;
     height: 100%;
-    background-color: transparent;
-    border: 1px solid #3730a3;
+    background-color: var(--back-bg-color);
+    border: 1px solid var(--primary-back-border-color);
     border-radius: var(--border-radius);
     z-index: -1;
     box-sizing: border-box;
@@ -225,7 +234,7 @@
     transform: translate(var(--offset), var(--offset));
 }
 
-/* Ajuste para los enlaces del menú lateral - Simplificado */
+/* Ajuste para los enlaces del menú lateral - Efecto 3D sutil */
 .side-nav-link {
     position: relative;
     transition: transform 0.1s ease-out, color 0.3s, background-color 0.3s;
@@ -238,7 +247,7 @@
     left: var(--offset);
     width: calc(100% - 20px);
     height: calc(100% - 10px);
-    background-color: transparent;
+    background-color: var(--back-bg-color);
     border: 1px solid rgba(var(--bs-primary-rgb), 0.4);
     border-radius: var(--border-radius);
     z-index: -1;
