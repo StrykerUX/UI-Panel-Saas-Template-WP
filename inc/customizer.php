@@ -16,8 +16,9 @@ function ui_panel_saas_customize_register($wp_customize) {
     $wp_customize->get_setting('header_textcolor')->transport = 'postMessage';
 
     // Verificar si hay soporte para custom background
-    if (isset($wp_customize->get_setting('background_color'))) {
-        $wp_customize->get_setting('background_color')->transport = 'postMessage';
+    $background_color = $wp_customize->get_setting('background_color');
+    if ($background_color !== null) {
+        $background_color->transport = 'postMessage';
     }
 
     /**
