@@ -90,12 +90,15 @@ if (!function_exists('ui_panel_saas_setup')) :
         // Añadir soporte explícito para el plugin UI Panel SaaS Menu Manager
         add_theme_support('ui-panel-saas-menu-manager');
 
+        // Añadir soporte para Neo Brutalism
+        add_theme_support('ui-panel-saas-neo-brutalism');
+
         // Añadir paleta de colores del tema para el editor
         add_theme_support('editor-color-palette', array(
             array(
                 'name'  => esc_html__('Primario', 'ui-panel-saas'),
                 'slug'  => 'primary',
-                'color' => '#4F46E5',
+                'color' => '#FF596A',
             ),
             array(
                 'name'  => esc_html__('Secundario', 'ui-panel-saas'),
@@ -115,7 +118,7 @@ if (!function_exists('ui_panel_saas_setup')) :
             array(
                 'name'  => esc_html__('Advertencia', 'ui-panel-saas'),
                 'slug'  => 'warning',
-                'color' => '#F59E0B',
+                'color' => '#FBBF24',
             ),
             array(
                 'name'  => esc_html__('Información', 'ui-panel-saas'),
@@ -248,6 +251,9 @@ function ui_panel_saas_scripts() {
     // Estilos de botones 3D
     wp_enqueue_style('ui-panel-saas-buttons-3d', UI_PANEL_SAAS_ASSETS_URI . '/css/buttons-3d.css', array('ui-panel-saas-main'), UI_PANEL_SAAS_VERSION);
     
+    // Estilo Neo Brutalism
+    wp_enqueue_style('ui-panel-saas-neo-brutalism', UI_PANEL_SAAS_ASSETS_URI . '/css/neo-brutalism.css', array('ui-panel-saas-main'), UI_PANEL_SAAS_VERSION);
+    
     // Estilos específicos para RTL si es necesario
     if (is_rtl()) {
         wp_enqueue_style('ui-panel-saas-rtl', UI_PANEL_SAAS_ASSETS_URI . '/css/rtl.css', array('ui-panel-saas-main'), UI_PANEL_SAAS_VERSION);
@@ -317,9 +323,11 @@ add_filter('language_attributes', 'ui_panel_saas_add_html_attributes');
 
 /**
  * Agregar la clase 'apply-3d-effect' al body para activar los efectos 3D en todo el tema
+ * y 'neo-brutalism' para el nuevo estilo
  */
 function ui_panel_saas_add_body_classes($classes) {
     $classes[] = 'apply-3d-effect';
+    $classes[] = 'neo-brutalism'; // Añadir clase para el estilo Neo Brutalism
     return $classes;
 }
 add_filter('body_class', 'ui_panel_saas_add_body_classes');
