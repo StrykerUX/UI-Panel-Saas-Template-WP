@@ -1,0 +1,446 @@
+/**
+ * UI Panel SAAS - Neo Brutalism Style
+ * Estilos personalizados para implementar el estilo Neo-Brutalismo Suave.
+ */
+
+/* ============
+   Variables
+   ============ */
+:root {
+    /* Colores principales - Neo Brutalism */
+    --bs-primary: #FF596A;
+    --bs-secondary: #8B5CF6;
+    --bs-success: #10B981;
+    --bs-info: #3B82F6;
+    --bs-warning: #FBBF24;
+    --bs-danger: #EF4444;
+    --bs-light: #F9FAFB;
+    --bs-dark: #111827;
+    
+    /* Versiones RGB de los colores principales */
+    --bs-primary-rgb: 255, 89, 106;
+    --bs-secondary-rgb: 139, 92, 246;
+    --bs-success-rgb: 16, 185, 129;
+    --bs-info-rgb: 59, 130, 246;
+    --bs-warning-rgb: 251, 191, 36;
+    --bs-danger-rgb: 239, 68, 68;
+    --bs-light-rgb: 249, 250, 251;
+    --bs-dark-rgb: 17, 24, 39;
+    
+    /* Variantes de colores */
+    --bs-primary-light: #FF7A8A;
+    --bs-primary-dark: #E63E50;
+    --bs-secondary-light: #A78BFA;
+    --bs-secondary-dark: #7C3AED;
+    --bs-success-light: #34D399;
+    --bs-success-dark: #059669;
+    --bs-info-light: #60A5FA;
+    --bs-info-dark: #2563EB;
+    --bs-warning-light: #FCD34D;
+    --bs-warning-dark: #D97706;
+    --bs-danger-light: #F87171;
+    --bs-danger-dark: #DC2626;
+    
+    /* Layout - Neo Brutalism */
+    --sidenav-width: 260px;
+    --sidenav-condensed-width: 70px;
+    --topbar-height: 70px;
+    --card-border-radius: 12px;
+    --button-border-radius: 8px;
+    --input-border-radius: 8px;
+    
+    /* Shadows - Neo Brutalism */
+    --neo-shadow-sm: 4px 4px 0px rgba(0, 0, 0, 0.2);
+    --neo-shadow: 6px 6px 0px rgba(0, 0, 0, 0.2);
+    --neo-shadow-lg: 8px 8px 0px rgba(0, 0, 0, 0.2);
+}
+
+/* Dark mode variables */
+[data-bs-theme=dark] {
+    --bs-body-color: #aab8c5;
+    --bs-body-bg: #212529;
+    --bs-tertiary-bg: #2b3035;
+    --bs-tertiary-bg-rgb: 43, 48, 53;
+    --bs-emphasis-color: #f0f0f0;
+    --bs-emphasis-color-rgb: 240, 240, 240;
+    --bs-card-bg: #262e35;
+    --bs-card-border-color: #30373d;
+    
+    /* Neo Brutalism Dark Mode Shadows */
+    --neo-shadow-sm: 4px 4px 0px rgba(255, 255, 255, 0.1);
+    --neo-shadow: 6px 6px 0px rgba(255, 255, 255, 0.1);
+    --neo-shadow-lg: 8px 8px 0px rgba(255, 255, 255, 0.1);
+}
+
+/* ============
+   Cards y Widgets - Neo Brutalism
+   ============ */
+.card {
+    border-radius: var(--card-border-radius);
+    border: 2px solid var(--bs-dark);
+    box-shadow: var(--neo-shadow);
+    transition: all 0.2s ease;
+    margin-bottom: 30px;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--neo-shadow-lg);
+}
+
+.card-header {
+    background-color: transparent;
+    border-bottom: 2px solid var(--bs-card-border-color);
+    padding: 1.25rem var(--bs-card-spacer-x);
+    border-top-left-radius: calc(var(--card-border-radius) - 2px);
+    border-top-right-radius: calc(var(--card-border-radius) - 2px);
+}
+
+.card-body {
+    padding: 1.25rem;
+}
+
+/* ============
+   Botones - Neo Brutalism
+   ============ */
+.btn {
+    border-radius: var(--button-border-radius);
+    padding: 0.6rem 1.2rem;
+    font-weight: 600;
+    position: relative;
+    border: 2px solid transparent;
+    box-shadow: var(--neo-shadow-sm);
+    transition: all 0.2s ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--neo-shadow);
+}
+
+.btn:active {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.2);
+}
+
+.btn-primary {
+    --bs-btn-color: #fff;
+    --bs-btn-bg: var(--bs-primary);
+    --bs-btn-border-color: var(--bs-dark);
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: var(--bs-primary-dark);
+    --bs-btn-hover-border-color: var(--bs-dark);
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: var(--bs-primary-dark);
+    --bs-btn-active-border-color: var(--bs-dark);
+}
+
+.btn-success {
+    --bs-btn-color: #fff;
+    --bs-btn-bg: var(--bs-success);
+    --bs-btn-border-color: var(--bs-dark);
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: var(--bs-success-dark);
+    --bs-btn-hover-border-color: var(--bs-dark);
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: var(--bs-success-dark);
+    --bs-btn-active-border-color: var(--bs-dark);
+}
+
+.btn-danger {
+    --bs-btn-color: #fff;
+    --bs-btn-bg: var(--bs-danger);
+    --bs-btn-border-color: var(--bs-dark);
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: var(--bs-danger-dark);
+    --bs-btn-hover-border-color: var(--bs-dark);
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: var(--bs-danger-dark);
+    --bs-btn-active-border-color: var(--bs-dark);
+}
+
+.btn-warning {
+    --bs-btn-color: var(--bs-dark);
+    --bs-btn-bg: var(--bs-warning);
+    --bs-btn-border-color: var(--bs-dark);
+    --bs-btn-hover-color: var(--bs-dark);
+    --bs-btn-hover-bg: var(--bs-warning-dark);
+    --bs-btn-hover-border-color: var(--bs-dark);
+    --bs-btn-active-color: var(--bs-dark);
+    --bs-btn-active-bg: var(--bs-warning-dark);
+    --bs-btn-active-border-color: var(--bs-dark);
+}
+
+.btn-info {
+    --bs-btn-color: #fff;
+    --bs-btn-bg: var(--bs-info);
+    --bs-btn-border-color: var(--bs-dark);
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: var(--bs-info-dark);
+    --bs-btn-hover-border-color: var(--bs-dark);
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: var(--bs-info-dark);
+    --bs-btn-active-border-color: var(--bs-dark);
+}
+
+/* ============
+   Sidenav Menu - Neo Brutalism
+   ============ */
+.sidenav-menu {
+    border-right: 2px solid var(--bs-dark);
+    box-shadow: var(--neo-shadow);
+}
+
+.side-nav-link {
+    margin: 5px 10px;
+    border-radius: var(--button-border-radius);
+    transition: all 0.2s ease;
+}
+
+.side-nav-link:hover {
+    background-color: rgba(var(--bs-primary-rgb), 0.1);
+    transform: translateX(5px);
+}
+
+.side-nav-link.active {
+    background-color: rgba(var(--bs-primary-rgb), 0.15);
+    color: var(--bs-primary);
+    font-weight: 600;
+    box-shadow: var(--neo-shadow-sm);
+}
+
+/* ============
+   Topbar - Neo Brutalism
+   ============ */
+.app-topbar {
+    border-bottom: 2px solid var(--bs-dark);
+    box-shadow: var(--neo-shadow-sm);
+}
+
+.topbar-search {
+    border: 2px solid var(--bs-dark);
+    border-radius: var(--input-border-radius);
+    box-shadow: var(--neo-shadow-sm);
+    transition: all 0.2s ease;
+}
+
+.topbar-search:focus-within {
+    transform: translateY(-2px);
+    box-shadow: var(--neo-shadow);
+}
+
+.dropdown-menu {
+    border-radius: var(--card-border-radius);
+    border: 2px solid var(--bs-dark);
+    box-shadow: var(--neo-shadow);
+    overflow: hidden;
+}
+
+/* ============
+   Dashboard Stats - Neo Brutalism
+   ============ */
+.dashboard-stat {
+    border: 2px solid var(--bs-dark);
+    border-radius: var(--card-border-radius);
+    box-shadow: var(--neo-shadow);
+    transition: all 0.2s ease;
+    padding: 1.5rem;
+}
+
+.dashboard-stat:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--neo-shadow-lg);
+}
+
+.stat-icon {
+    box-shadow: var(--neo-shadow-sm);
+    border: 2px solid var(--bs-dark);
+}
+
+/* ============
+   Input Forms - Neo Brutalism
+   ============ */
+.form-control, .form-select {
+    border: 2px solid var(--bs-dark);
+    border-radius: var(--input-border-radius);
+    padding: 0.6rem 1rem;
+    box-shadow: var(--neo-shadow-sm);
+    transition: all 0.2s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--bs-primary);
+    box-shadow: var(--neo-shadow);
+    transform: translateY(-2px);
+}
+
+/* ============
+   Badges y Pills - Neo Brutalism
+   ============ */
+.badge {
+    font-weight: 600;
+    padding: 0.5em 0.8em;
+    border-radius: var(--button-border-radius);
+    border: 1px solid var(--bs-dark);
+}
+
+/* ============
+   Alertas - Neo Brutalism
+   ============ */
+.alert {
+    border-radius: var(--card-border-radius);
+    border: 2px solid var(--bs-dark);
+    box-shadow: var(--neo-shadow-sm);
+    border-left-width: 6px;
+}
+
+/* ============
+   Chat AI - Neo Brutalism (como en las imágenes)
+   ============ */
+.chat-ai-container {
+    border-radius: var(--card-border-radius);
+    border: 2px solid var(--bs-dark);
+    box-shadow: var(--neo-shadow);
+    overflow: hidden;
+}
+
+.chat-message {
+    padding: 1rem;
+    margin: 0.5rem;
+    border-radius: var(--button-border-radius);
+}
+
+.chat-message.ai {
+    background-color: rgba(var(--bs-info-rgb), 0.1);
+    border: 1px solid var(--bs-info);
+}
+
+.chat-message.user {
+    background-color: rgba(var(--bs-primary-rgb), 0.1);
+    border: 1px solid var(--bs-primary);
+}
+
+.chat-input {
+    border: 2px solid var(--bs-dark);
+    border-radius: var(--input-border-radius);
+    padding: 0.8rem 1rem;
+    box-shadow: var(--neo-shadow-sm);
+    margin: 1rem;
+}
+
+.chat-send-button {
+    background-color: var(--bs-primary);
+    color: white;
+    border: 2px solid var(--bs-dark);
+    border-radius: var(--button-border-radius);
+    padding: 0.5rem 1rem;
+    box-shadow: var(--neo-shadow-sm);
+    transition: all 0.2s ease;
+}
+
+.chat-send-button:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--neo-shadow);
+}
+
+/* ============
+   Quick Links - Neo Brutalism
+   ============ */
+.quick-links-container {
+    border-radius: var(--card-border-radius);
+    border: 2px solid var(--bs-dark);
+    box-shadow: var(--neo-shadow);
+    overflow: hidden;
+}
+
+.quick-link-item {
+    border-bottom: 1px solid var(--bs-border-color);
+    transition: all 0.2s ease;
+}
+
+.quick-link-item:hover {
+    background-color: rgba(var(--bs-primary-rgb), 0.05);
+}
+
+.edit-button {
+    border: 1px solid var(--bs-dark);
+    border-radius: var(--button-border-radius);
+    box-shadow: var(--neo-shadow-sm);
+    transition: all 0.2s ease;
+}
+
+.edit-button:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--neo-shadow);
+}
+
+/* ============
+   Responsive - Media Queries
+   ============ */
+@media (max-width: 991.98px) {
+    .sidebar-enable .sidenav-menu {
+        box-shadow: var(--neo-shadow-lg);
+    }
+}
+
+/* Estilos específicos para las estadísticas que se muestran en las imágenes */
+.stat-card {
+    border-radius: var(--card-border-radius);
+    border: 2px solid var(--bs-dark);
+    box-shadow: var(--neo-shadow);
+    transition: all 0.2s ease;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    background-color: var(--bs-card-bg);
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--neo-shadow-lg);
+}
+
+.stat-card-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+.stat-card-icon.revenue {
+    background-color: var(--bs-primary);
+}
+
+.stat-card-icon.users {
+    background-color: var(--bs-success);
+}
+
+.stat-card-icon.conversion {
+    background-color: var(--bs-info);
+}
+
+.stat-value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin: 0.5rem 0;
+}
+
+.stat-trend {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--button-border-radius);
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.stat-trend.up {
+    background-color: rgba(var(--bs-success-rgb), 0.15);
+    color: var(--bs-success);
+}
+
+.stat-trend.down {
+    background-color: rgba(var(--bs-danger-rgb), 0.15);
+    color: var(--bs-danger);
+}
